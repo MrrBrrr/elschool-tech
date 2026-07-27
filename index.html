@@ -14,6 +14,7 @@
     --line:rgba(22,24,26,.16);
   }
   *{margin:0;padding:0;box-sizing:border-box}
+  html,body{overflow-x:hidden;max-width:100%}
   html{scroll-snap-type:y proximity;scroll-behavior:smooth}
   body{
     background:var(--bg);color:var(--ink);
@@ -100,7 +101,7 @@
   .hero-t .fat em{font-style:normal;color:var(--accent-ink)}
   .hero-t .rule{display:flex;align-items:center;gap:14px;margin-top:20px}
   .hero-t .rule i{width:64px;height:2px;background:var(--accent)}
-  .hero-t .rule span{font-size:12px;letter-spacing:.14em;color:var(--ink-dim);text-transform:uppercase}
+  .hero-t .rule span{font-size:12px;letter-spacing:.14em;color:var(--ink-dim);text-transform:uppercase;min-width:0}
 
   .scope{position:relative;width:14px;height:14px;flex-shrink:0;display:inline-block}
   .scope::before{
@@ -194,6 +195,9 @@
     .num{font-size:24px}
     .hero-t .fat{font-size:17vw}
     .hero-t .thin{font-size:5.6vw}
+    .hero-t .rule i{width:34px}
+    .hero-t .rule span{font-size:10px;letter-spacing:.08em}
+    .plate{max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .scrim,.slide.center .scrim{
       background:linear-gradient(0deg,
         rgba(242,242,239,.97) 0%, rgba(242,242,239,.84) 40%,
@@ -237,7 +241,7 @@
 
 <!-- 1. HERO: видео walk -->
 <section class="slide" id="s1" data-img="gen/var-b-walk.webp"
-  data-anchors='[[0.36,0.56,"рюкзак: собран [1.00]"],[0.2,0.62,"вчерашний день: позади"],[0.44,0.44,"курс: вперёд [0.98]"]]'>
+  data-anchors='[[0.36, 0.56, "рюкзак: собран [1.00]", "собран в путь · 1.00"], [0.2, 0.62, "вчерашний день: позади", "вчера осталось позади"], [0.44, 0.44, "курс: вперёд [0.98]", "курс: вперёд · 0.98"]]'>
   <div class="sbg"><video id="walkVid" src="gen/video-b-walk-web.mp4" poster="gen/var-b-walk.webp" autoplay muted playsinline></video></div>
   <div class="scrim"></div>
   <div class="content hero-t">
@@ -253,7 +257,7 @@
 
 <!-- 2. МАРШРУТ: grow -->
 <section class="slide" id="s2" data-img="gen/var-b-grow.webp"
-  data-anchors='[[0.37,0.6,"точка старта [1.00]"],[0.47,0.52,"набирает высоту [0.94]"],[0.57,0.4,"почти взрослый [0.90]"],[0.63,0.3,"рост: измеряем честно"]]'>
+  data-anchors='[[0.37, 0.6, "точка старта [1.00]", "точка старта · 1.00"], [0.47, 0.52, "набирает высоту [0.94]", "набирает высоту"], [0.57, 0.4, "почти взрослый [0.90]", "почти взрослый"], [0.63, 0.3, "рост: измеряем честно", "рост измерен честно"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-grow.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -268,7 +272,7 @@
 
 <!-- 3. УЧЁБА: board -->
 <section class="slide" id="s3" data-img="gen/var-b-board.webp"
-  data-anchors='[[0.5,0.42,"недостающий кусочек: найден"],[0.62,0.5,"уверенность [0.93]"],[0.42,0.62,"страх ошибки: не обнаружен [0.02]"]]'>
+  data-anchors='[[0.5, 0.42, "недостающий кусочек: найден", "кусочек найден"], [0.62, 0.5, "уверенность [0.93]", "уверенность · 0.93"], [0.42, 0.62, "страх ошибки: не обнаружен [0.02]", "страха ошибки нет"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-board.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -283,7 +287,7 @@
 
 <!-- 4. ТЬЮТОР: duo -->
 <section class="slide" id="s4" data-img="gen/var-b-duo.webp"
-  data-anchors='[[0.75,0.22,"наклонился: слушает [0.99]"],[0.63,0.52,"услышан [1.00]"],[0.7,0.85,"на одной земле [0.97]"]]'>
+  data-anchors='[[0.75, 0.22, "наклонился: слушает [0.99]", "слушает · 0.99"], [0.63, 0.52, "услышан [1.00]", "услышан · 1.00"], [0.7, 0.85, "на одной земле [0.97]", "на одной земле"]]'>
   <div class="sbg"><video id="duoVid" src="gen/video-b-duo-web.mp4" poster="gen/var-b-duo.webp" muted playsinline preload="none"></video></div>
   <div class="scrim"></div>
   <div class="content">
@@ -298,7 +302,7 @@
 
 <!-- 5. СРЕДА: high5 -->
 <section class="slide" id="s5" data-img="gen/var-b-high5.webp"
-  data-anchors='[[0.57,0.4,"победа: общая [1.00]"],[0.53,0.75,"гравитация: побеждена [0.87]"],[0.66,0.55,"дружба: подтверждена [0.99]"]]'>
+  data-anchors='[[0.57, 0.4, "победа: общая [1.00]", "победа общая · 1.00"], [0.53, 0.75, "гравитация: побеждена [0.87]", "гравитация побеждена"], [0.66, 0.55, "дружба: подтверждена [0.99]", "дружба · 0.99"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-high5.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -312,7 +316,7 @@
 
 <!-- 6. ЗНАНИЯ: read -->
 <section class="slide" id="s6" data-img="gen/var-b-read.webp"
-  data-anchors='[[0.5,0.6,"книга: живая [0.99]"],[0.63,0.32,"идеи: разлетаются"],[0.49,0.28,"внимание: глубокое [0.96]"]]'>
+  data-anchors='[[0.5, 0.6, "книга: живая [0.99]", "книга живая · 0.99"], [0.63, 0.32, "идеи: разлетаются", "идеи разлетаются"], [0.49, 0.28, "внимание: глубокое [0.96]", "внимание глубокое"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-read.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -342,7 +346,7 @@
 
 <!-- 8. ФИНАЛ МАРШРУТА: graduate -->
 <section class="slide" id="s8" data-img="gen/var-b-graduate.webp"
-  data-anchors='[[0.5,0.18,"шапочка: заслужена [1.00]"],[0.57,0.32,"золото: настоящее"],[0.5,0.85,"каждая ступень: пройдена"]]'>
+  data-anchors='[[0.5, 0.18, "шапочка: заслужена [1.00]", "шапочка заслужена"], [0.57, 0.32, "золото: настоящее", "золото настоящее"], [0.5, 0.85, "каждая ступень: пройдена", "ступени пройдены"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-graduate.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -392,7 +396,7 @@
 
 <!-- 10. CTA: backpack -->
 <section class="slide" id="s10" data-img="gen/var-b-backpack.webp"
-  data-anchors='[[0.47,0.5,"рюкзак: полон открытий [1.00]"],[0.63,0.42,"знания: рвутся наружу"],[0.35,0.7,"место для вашего ребёнка: есть"]]'>
+  data-anchors='[[0.47, 0.5, "рюкзак: полон открытий [1.00]", "полон открытий · 1.00"], [0.63, 0.42, "знания: рвутся наружу", "знания наружу"], [0.35, 0.7, "место для вашего ребёнка: есть", "место для вашего есть"]]'>
   <div class="sbg" style="background-image:url(gen/var-b-backpack.webp)"></div>
   <div class="scrim"></div>
   <div class="content">
@@ -605,7 +609,68 @@ function draw(){
     const [px,py]=imgToScreen(slide,prev[0],prev[1]);
     const gx=px+(ax-px)*e, gy=py+(ay-py)*e;
 
-    const M = innerWidth<=760 ? 0.68 : 1;   /* мобильный масштаб взгляда */
+    const MOBILE = innerWidth<=760;
+    if(MOBILE){
+      /* --- мобильный взгляд: точка, сканер-линия, пилюля --- */
+      const sr = slide.getBoundingClientRect();
+      const label = cur[3] || cur[2];
+      const chars = reduced?label.length:settled?Math.min(label.length,Math.floor((dt-FLY)/30)):0;
+      const txt = label.slice(0,chars);
+      const settled2 = k>=1;
+
+      /* дрейфующая линия-сканер */
+      if(!reduced){
+        const sy2 = sr.top + sr.height*(0.14 + 0.34*(0.5+0.5*Math.sin(now/4200)));
+        cx.strokeStyle=hexA(ACCENT,.10);
+        cx.beginPath();cx.moveTo(sr.left,sy2);cx.lineTo(sr.right,sy2);cx.stroke();
+        cx.strokeStyle=hexA(ACCENT,.32);
+        cx.beginPath();cx.moveTo(gx-14,sy2);cx.lineTo(gx+14,sy2);cx.stroke();
+      }
+
+      /* точка-прицел: ядро + тонкое кольцо-пульс */
+      const pl = settled2 ? 1+.25*Math.sin((dt-FLY)/300) : 1;
+      cx.fillStyle=hexA('#16181a',.8);
+      cx.beginPath();cx.arc(gx,gy,2,0,6.284);cx.fill();
+      cx.lineWidth=0.8;
+      cx.strokeStyle=hexA('#16181a',.4);
+      cx.beginPath();cx.arc(gx,gy,7*pl,0,6.284);cx.stroke();
+      if(settled2 && chars>=label.length){
+        cx.strokeStyle=hexA(ACCENT,.8);
+        cx.beginPath();cx.arc(gx,gy,10*pl,0,6.284);cx.stroke();
+      }
+
+      /* пилюля с мыслью - под шапкой, по центру */
+      cx.font='9.5px "Segoe UI",sans-serif';
+      const tw2 = cx.measureText(label).width;
+      const chW = tw2+34, chH = 23;
+      let chX = Math.min(Math.max(sr.left+12,(sr.left+sr.right)/2-chW/2), sr.right-chW-12);
+      let chY = Math.max(sr.top+62, 62);
+      /* линия-связь пилюля -> точка */
+      cx.lineWidth=0.7;
+      cx.strokeStyle=hexA('#16181a',.16);
+      cx.beginPath();cx.moveTo(chX+chW/2, chY+chH);cx.lineTo(gx,gy);cx.stroke();
+      /* сама пилюля */
+      cx.fillStyle='rgba(255,255,255,.9)';
+      cx.strokeStyle= (settled2&&chars>=label.length)?hexA(ACCENT,.85):hexA('#16181a',.3);
+      cx.lineWidth=0.9;
+      cx.beginPath();
+      if(cx.roundRect) cx.roundRect(chX,chY,chW,chH,chH/2); else cx.rect(chX,chY,chW,chH);
+      cx.fill();cx.stroke();
+      /* пульс-точка внутри */
+      const dp = 1+.3*Math.sin(now/500);
+      cx.fillStyle=hexA(ACCENT,.9);
+      cx.beginPath();cx.arc(chX+13,chY+chH/2,2.2*dp,0,6.284);cx.fill();
+      if(txt){
+        cx.fillStyle=hexA('#16181a',.82);
+        cx.fillText(txt, chX+24, chY+chH/2+3.2);
+        if(!reduced&&chars<label.length&&Math.sin(now/120)>0){
+          const cw2=cx.measureText(txt).width;
+          cx.fillRect(chX+25+cw2,chY+6,1,chH-12);
+        }
+      }
+    } else {
+    const M = 1;
+
     cx.lineWidth=M<1?0.8:1;
     cx.font=(M<1?'8.5px':'10.5px')+' "Segoe UI",sans-serif';
 
@@ -663,6 +728,7 @@ function draw(){
       cx.beginPath();cx.arc(gx,gy,11*M*pulse,0,6.284);cx.stroke();
       cx.fillStyle=hexA(ACC,.9*ca);
       cx.fillRect(bx+bw-5*M,by-5*M,4*M,4*M);
+    }
     }
   }
   requestAnimationFrame(draw);

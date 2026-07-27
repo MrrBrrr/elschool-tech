@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ель School - светлый прототип v1 (развитие кадра 02)</title>
+<style>
+  :root{
+    --bg:#eceae5;
+    --ink:#16181a;
+    --ink-dim:rgba(22,24,26,.55);
+    --accent:#5f9e1f;
+    --line:rgba(22,24,26,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Inter",system-ui,sans-serif;
+  }
+  ::selection{background:var(--accent);color:#fff}
+
+  /* ==== шапка ==== */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:26px 48px 30px;
+    background:linear-gradient(to bottom, rgba(236,234,229,.92), rgba(236,234,229,0));
+  }
+  .logo{font-size:13px;letter-spacing:.42em;font-weight:700;text-transform:uppercase}
+  .logo b{color:var(--accent)}
+  nav{display:flex;gap:32px;align-items:center}
+  nav a{
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-dim);text-decoration:none;
+  }
+  nav a:hover{color:var(--ink)}
+
+  /* ==== sticky CTA ==== */
+  .sticky-cta{
+    position:fixed;right:26px;bottom:26px;z-index:60;
+    padding:15px 26px;background:var(--ink);color:var(--bg);
+    font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;
+    box-shadow:0 8px 30px rgba(22,24,26,.25);
+    transition:background .25s;
+  }
+  .sticky-cta:hover{background:var(--accent);color:#fff}
+
+  /* ==== ростомер-прогресс скролла ==== */
+  .growth{
+    position:fixed;right:44px;top:50%;transform:translateY(-50%);z-index:40;
+    height:46vh;width:1px;background:var(--line);
+  }
+  .growth .fill{
+    position:absolute;bottom:0;left:0;width:1px;height:0%;
+    background:var(--accent);transition:height .15s linear;
+  }
+  .growth .mark{
+    position:absolute;left:-4px;width:9px;height:1px;background:rgba(22,24,26,.4);
+  }
+  .growth .mark span{
+    position:absolute;right:14px;top:-5px;white-space:nowrap;
+    font-size:9.5px;letter-spacing:.12em;color:var(--ink-dim);text-transform:uppercase;
+  }
+  .growth .dot{
+    position:absolute;left:-3px;width:7px;height:7px;border-radius:50%;
+    background:var(--accent);bottom:0;transition:bottom .15s linear;
+  }
+  @media(max-width:900px){.growth{display:none}}
+
+  /* ==== общие секции ==== */
+  section{position:relative;min-height:100vh;padding:120px 48px 90px}
+  .kicker{display:flex;align-items:center;gap:16px;margin-bottom:34px}
+  .kicker .num{font-size:clamp(30px,3.4vw,46px);font-weight:800;color:var(--accent)}
+  .kicker .name{font-size:13px;letter-spacing:.36em;text-transform:uppercase}
+  .kicker .scope{opacity:.8}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.on{opacity:1;transform:none}
+
+  /* ==== HERO ==== */
+  .hero-sec{min-height:100vh;padding:0;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;background-size:cover;background-position:66% center}
+  #heroCv{position:absolute;inset:0;width:100%;height:100%}
+  .hero-inner{position:absolute;left:48px;top:50%;transform:translateY(-50%);z-index:5;max-width:40vw}
+  .hero-inner .thin{font-size:clamp(20px,2.6vw,36px);font-weight:200;letter-spacing:.36em;text-transform:uppercase}
+  .hero-inner .fat{font-size:clamp(52px,8.4vw,118px);font-weight:800;line-height:1;text-transform:uppercase}
+  .hero-inner .fat em{font-style:normal;color:var(--accent)}
+  .hero-inner .rule{display:flex;align-items:center;gap:14px;margin-top:22px}
+  .hero-inner .rule i{width:64px;height:2px;background:var(--accent)}
+  .hero-inner .rule span{font-size:12.5px;letter-spacing:.14em;color:var(--ink-dim);text-transform:uppercase}
+  .hero-inner .cta{
+    display:inline-block;margin-top:36px;padding:16px 36px;
+    background:var(--ink);color:var(--bg);text-decoration:none;
+    font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .hero-inner .cta:hover{background:var(--accent);color:#fff}
+  .hero-hint{
+    position:absolute;left:48px;bottom:30px;z-index:6;
+    display:flex;gap:8px;align-items:center;pointer-events:auto;
+    font-size:10.5px;letter-spacing:.12em;color:rgba(22,24,26,.4);text-transform:uppercase;
+  }
+  .hero-hint button{
+    pointer-events:auto;cursor:pointer;
+    padding:7px 12px;border:1px solid var(--line);background:rgba(255,255,255,.6);
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);
+    transition:border-color .2s,color .2s;
+  }
+  .hero-hint button:hover{border-color:var(--accent);color:var(--ink)}
+  .hero-hint button.on{border-color:var(--accent);color:var(--ink);background:#fff}
+
+  /* ==== 01 Маршруты ==== */
+  .routes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1200px}
+  .route{
+    position:relative;border:1px solid var(--line);padding:26px 24px 22px;
+    background:rgba(255,255,255,.5);
+    transition:border-color .25s, transform .25s;
+  }
+  .route:hover{border-color:var(--accent);transform:translateY(-4px)}
+  .route .tag{
+    position:absolute;top:-9px;left:18px;padding:2px 10px;
+    background:var(--bg);font-size:10px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;
+    border:1px solid var(--accent);
+  }
+  .route h3{font-size:19px;font-weight:700;margin-bottom:8px}
+  .route p{font-size:13px;line-height:1.7;color:var(--ink-dim)}
+  @media(max-width:900px){.routes{grid-template-columns:1fr}}
+
+  /* ==== 02 Школа изнутри ==== */
+  .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1200px}
+  .shot{position:relative;border:1px solid var(--line);background:#fff}
+  .shot .iw{position:relative;overflow:hidden}
+  .shot img{width:100%;height:230px;object-fit:cover;display:block;filter:saturate(.92)}
+
+  /* CV-окантовка фото: уголки-скобки */
+  .shot .iw::before,.shot .iw::after{
+    content:'';position:absolute;width:20px;height:20px;z-index:3;
+    opacity:0;transition:opacity .5s .9s;
+  }
+  .shot .iw::before{left:8px;top:8px;border-left:2px solid var(--accent);border-top:2px solid var(--accent)}
+  .shot .iw::after{right:8px;bottom:8px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent)}
+  .shot.on .iw::before,.shot.on .iw::after{opacity:1}
+
+  /* сканирующая линия: взгляд «прочитывает» кадр при появлении */
+  .shot .scan{
+    position:absolute;left:0;right:0;top:0;height:2px;z-index:2;
+    background:var(--accent);box-shadow:0 0 14px var(--accent);opacity:0;
+  }
+  .shot.on .scan{animation:scanSweep 1.7s ease-in-out .4s 1}
+  @keyframes scanSweep{0%{opacity:.85;top:0}85%{opacity:.85}100%{opacity:0;top:calc(100% - 2px)}}
+  @media (prefers-reduced-motion: reduce){.shot.on .scan{animation:none}}
+  .shot .ann{
+    position:absolute;border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 0 0 1px rgba(0,0,0,.15);
+    pointer-events:none;
+  }
+  .shot .ann i{
+    position:absolute;left:0;bottom:-22px;font-style:normal;white-space:nowrap;
+    font-size:9.5px;letter-spacing:.14em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7);
+    text-transform:uppercase;
+  }
+  .shot figcaption{padding:12px 16px;font-size:12px;color:var(--ink-dim);letter-spacing:.08em}
+  @media(max-width:900px){.shots{grid-template-columns:1fr}}
+  .note{margin-top:26px;font-size:11.5px;color:var(--ink-dim);max-width:560px;line-height:1.7}
+
+  /* ==== FAQ Чем отличаемся ==== */
+  .faq{max-width:860px}
+  .faq details{
+    border:1px solid var(--line);background:rgba(255,255,255,.5);
+    margin-bottom:14px;padding:0 24px;
+    transition:border-color .25s;
+  }
+  .faq details[open]{border-color:var(--accent)}
+  .faq summary{
+    cursor:pointer;list-style:none;
+    padding:20px 0;font-size:16.5px;font-weight:700;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary i{
+    font-style:normal;color:var(--accent);font-weight:800;font-size:20px;
+    transition:transform .25s;flex-shrink:0;
+  }
+  .faq details[open] summary i{transform:rotate(45deg)}
+  .faq .a{padding:0 0 18px;font-size:14px;line-height:1.75;color:var(--ink-dim);max-width:640px}
+  /* ремарка ИИ: живой прицел + печатающийся текст (без слов «взгляд ИИ») */
+  .faq .ai{
+    display:inline-flex;align-items:center;gap:10px;margin:0 0 20px;
+    border:1px solid var(--line);padding:7px 14px 7px 10px;
+    font-size:10.5px;letter-spacing:.1em;color:var(--ink-dim);
+    position:relative;min-height:30px;
+  }
+  .scope{
+    position:relative;width:14px;height:14px;flex-shrink:0;
+  }
+  .scope::before{
+    content:'';position:absolute;inset:0;border:1px solid var(--accent);border-radius:50%;
+    animation:scopePulse 1.6s ease-in-out infinite;
+  }
+  .scope::after{
+    content:'';position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;
+    background:var(--accent);border-radius:50%;
+  }
+  @keyframes scopePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.45}}
+  .faq .ai .tx::after{
+    content:'';display:inline-block;width:2px;height:11px;background:var(--accent);
+    margin-left:3px;vertical-align:-1px;
+    animation:caret 1s steps(1) infinite;
+  }
+  .faq .ai.done .tx::after{display:none}
+  @keyframes caret{50%{opacity:0}}
+
+  /* сканирующие уголки на карточках маршрутов */
+  .route::before,.route::after{
+    content:'';position:absolute;width:16px;height:16px;opacity:0;
+    transition:opacity .25s, transform .25s;pointer-events:none;
+  }
+  .route::before{
+    left:-5px;top:-5px;
+    border-left:2px solid var(--accent);border-top:2px solid var(--accent);
+    transform:translate(6px,6px);
+  }
+  .route::after{
+    right:-5px;bottom:-5px;
+    border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);
+    transform:translate(-6px,-6px);
+  }
+  .route:hover::before,.route:hover::after{opacity:1;transform:translate(0,0)}
+
+  /* рамки на фото: появляются с задержкой и дышат */
+  .shot .ann{opacity:0;transform:scale(.85);transition:opacity .5s .6s, transform .5s .6s}
+  .shot.on .ann{opacity:1;transform:scale(1);animation:annBreath 3.2s ease-in-out 1.4s infinite}
+  @keyframes annBreath{0%,100%{box-shadow:0 0 0 1px rgba(0,0,0,.15)}50%{box-shadow:0 0 0 2.5px rgba(0,0,0,.28)}}
+
+  /* бегунок роста: пульсирующее кольцо прицела */
+  .grow-scale .runner::after{
+    content:'';position:absolute;inset:-6px;border:1px solid var(--accent);border-radius:50%;
+    animation:scopePulse 1.8s ease-in-out infinite;
+  }
+
+  /* фокус на полях формы - «взгляд» наводится */
+  .form input:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* ==== 03 Рост ==== */
+  .grow-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1200px;align-items:center}
+  .grow-scale{position:relative;height:420px;width:2px;background:var(--line);margin:0 auto}
+  .grow-scale .m{position:absolute;left:-7px;width:16px;height:2px;background:var(--ink)}
+  .grow-scale .m span{
+    position:absolute;left:30px;top:-16px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);white-space:nowrap;
+  }
+  .grow-scale .m small{
+    position:absolute;left:30px;top:4px;font-size:10.5px;color:var(--ink-dim);white-space:nowrap;
+  }
+  .grow-scale .runner{
+    position:absolute;left:-5px;width:12px;height:12px;border-radius:50%;
+    background:var(--accent);bottom:0;
+  }
+  .facts h3{font-size:clamp(24px,2.6vw,36px);font-weight:800;line-height:1.25;margin-bottom:22px}
+  .facts h3 em{font-style:normal;color:var(--accent)}
+  .facts p{font-size:14.5px;line-height:1.8;color:var(--ink-dim);margin-bottom:14px;max-width:480px}
+  @media(max-width:900px){.grow-wrap{grid-template-columns:1fr}}
+
+  /* ==== CTA ==== */
+  .cta-sec{display:flex;align-items:center;justify-content:center;text-align:center}
+  .cta-box{max-width:640px}
+  .cta-box .thin{font-size:clamp(18px,2.2vw,28px);font-weight:200;letter-spacing:.3em;text-transform:uppercase}
+  .cta-box .fat{font-size:clamp(38px,5.5vw,72px);font-weight:800;text-transform:uppercase;line-height:1.05;margin-bottom:26px}
+  .cta-box p{font-size:14px;line-height:1.8;color:var(--ink-dim);margin-bottom:34px}
+  .form{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .form input{
+    padding:15px 18px;border:1px solid var(--line);background:#fff;
+    font-size:14px;min-width:220px;outline:none;
+  }
+  .form input:focus{border-color:var(--accent)}
+  .form button{
+    padding:15px 34px;background:var(--ink);color:var(--bg);border:none;cursor:pointer;
+    font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .form button:hover{background:var(--accent);color:#fff}
+  .form-note{margin-top:14px;font-size:10.5px;color:rgba(22,24,26,.4)}
+
+  /* ==== слой движения ==== */
+  .hero-bg{will-change:transform;transform:scale(1.05)}
+  .marquee{
+    overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:14px 0;background:rgba(255,255,255,.4);
+  }
+  .marquee .track{
+    display:flex;gap:56px;width:max-content;white-space:nowrap;
+    animation:mq 28s linear infinite;
+    font-size:11.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-dim);
+  }
+  .marquee .track b{color:var(--accent);font-weight:600}
+  @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .shot{overflow:hidden}
+  .shot img{animation:kb 18s ease-in-out infinite alternate;will-change:transform}
+  .shot:nth-child(2) img{animation-delay:-6s}
+  .shot:nth-child(3) img{animation-delay:-12s}
+  @keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+  .routes .route:nth-child(2){transition-delay:.07s}
+  .routes .route:nth-child(3){transition-delay:.14s}
+  .routes .route:nth-child(4){transition-delay:.21s}
+  .routes .route:nth-child(5){transition-delay:.28s}
+  .routes .route:nth-child(6){transition-delay:.35s}
+  .shots .shot:nth-child(2){transition-delay:.1s}
+  .shots .shot:nth-child(3){transition-delay:.2s}
+  @media (prefers-reduced-motion: reduce){
+    .marquee .track,.shot img{animation:none}
+    .hero-bg{transform:none}
+  }
+  @media (max-width:1366px){.hero-inner{max-width:46vw}}
+  @media (max-height:820px){section{padding:96px 48px 70px}}
+
+  footer.site{
+    padding:40px 48px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    font-size:11.5px;color:var(--ink-dim);letter-spacing:.08em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ЕЛЬ <b>SCHOOL</b></div>
+  <nav>
+    <a href="#routes">Маршруты</a>
+    <a href="#inside">Школа</a>
+    <a href="#diff">Отличия</a>
+    <a href="#growth">Рост</a>
+    <a href="#start">Диагностика</a>
+  </nav>
+</header>
+
+<a class="sticky-cta" href="#start">Записаться на диагностику</a>
+
+<div class="growth" id="growthBar">
+  <div class="fill" id="growthFill"></div>
+  <div class="dot" id="growthDot"></div>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero-sec" id="top">
+  <div class="hero-bg" id="heroBg" style="background-image:url('gen/hero-c.png')"></div>
+  <canvas id="heroCv"></canvas>
+  <div class="hero-inner">
+    <div class="thin">Здесь</div>
+    <div class="fat">Растут<em>.</em></div>
+    <div class="rule"><i></i><span>Частная школа · 1-11 класс · Новосибирск</span></div>
+    <a class="cta" href="#start">Записаться на диагностику</a>
+  </div>
+  <div class="hero-hint">
+    <span>герой:</span>
+    <button data-h="1">Яблоко</button>
+    <button data-h="2">Ребёнок</button>
+    <button data-h="3">Натюрморт</button>
+    <button data-h="4">Ель А</button>
+    <button data-h="5">Ель Б</button>
+  </div>
+</section>
+
+<div class="marquee"><div class="track">
+  <span>Рост</span><b>·</b><span>Диагностика</span><b>·</b><span>Тьюторы</span><b>·</b><span>Проекты</span><b>·</b><span>Олимпиады</span><b>·</b><span>Карьерный трек</span><b>·</b><span>8:30-16:30</span><b>·</b><span>Ползунова, 7</span><b>·</b>
+  <span>Рост</span><b>·</b><span>Диагностика</span><b>·</b><span>Тьюторы</span><b>·</b><span>Проекты</span><b>·</b><span>Олимпиады</span><b>·</b><span>Карьерный трек</span><b>·</b><span>8:30-16:30</span><b>·</b><span>Ползунова, 7</span><b>·</b>
+</div></div>
+
+<!-- ================= 01 МАРШРУТЫ ================= -->
+<section id="routes">
+  <div class="kicker reveal"><div class="num">01.</div><i class="scope"></i><div class="name">Свой маршрут</div></div>
+  <div class="routes">
+    <div class="route reveal"><div class="tag">с 5,5 лет</div><h3>Нулевой класс</h3><p>Мягкий вход в школу с 5,5 лет: персональная диагностика, «Школа для родителей». День с 8:30 до 16:30.</p></div>
+    <div class="route reveal"><div class="tag">1-4</div><h3>Начальная школа</h3><p>Фундамент без страха ошибки: тьютор рядом, картина мира вместо оценок.</p></div>
+    <div class="route reveal"><div class="tag">5-9</div><h3>Средняя школа</h3><p>Проекты, олимпиадная подготовка, первые собственные результаты и защита «Моего первого проекта».</p></div>
+    <div class="route reveal"><div class="tag">10-11</div><h3>Старшая школа</h3><p>Карьерный трек, подготовка к ЕГЭ, «Мой главный проект» перед комиссией с представителями вузов.</p></div>
+    <div class="route reveal"><div class="tag">круглый год</div><h3>Перевод из другой школы</h3><p>Отдельный маршрут для семей, которые меняют школу: диагностика, план адаптации, быстрые ответы.</p></div>
+    <div class="route reveal"><div class="tag">онлайн</div><h3>Онлайн-школа</h3><p>Тот же подход - из любого города: кураторы, тьюторы, проекты и олимпиады в дистанционном формате.</p></div>
+  </div>
+</section>
+
+<!-- ================= 02 ШКОЛА ИЗНУТРИ ================= -->
+<section id="inside">
+  <div class="kicker reveal"><div class="num">02.</div><i class="scope"></i><div class="name">Школа изнутри</div></div>
+  <div class="shots">
+    <figure class="shot reveal">
+      <div class="iw"><img src="img/09_Rectangle_144650.png" alt="Коридор со шкафчиками"><div class="ann" style="left:52%;top:28%;width:34%;height:42%"><i>личные шкафчики</i></div><b class="scan"></b></div>
+      <figcaption>Пространство, где у каждого есть своё место</figcaption>
+    </figure>
+    <figure class="shot reveal">
+      <div class="iw"><img src="img/10_Rectangle_144649.png" alt="Мастерская"><div class="ann" style="left:8%;top:18%;width:36%;height:52%"><i>мастерская</i></div><b class="scan"></b></div>
+      <figcaption>Руки заняты делом, голова - смыслом</figcaption>
+    </figure>
+    <figure class="shot reveal">
+      <div class="iw"><img src="img/21_Rectangle_144671.png" alt="Класс со светом"><div class="ann" style="left:6%;top:12%;width:42%;height:60%"><i>свет · окна в пол</i></div><b class="scan"></b></div>
+      <figcaption>Классы, в которых хочется остаться после уроков</figcaption>
+    </figure>
+  </div>
+  <p class="note reveal">Фото - реальные интерьеры школы на Ползунова, 7. Кадры с детьми появятся после согласования с родителями - так положено, и мы так делаем.</p>
+</section>
+
+<!-- ================= 03 ЧЕМ ОТЛИЧАЕМСЯ ================= -->
+<section id="diff">
+  <div class="kicker reveal"><div class="num">03.</div><i class="scope"></i><div class="name">Чем мы отличаемся</div></div>
+  <div class="faq">
+    <details class="reveal" open>
+      <summary>Чем вы отличаетесь от обычной школы? <i>+</i></summary>
+      <div class="a">Мы формируем разностороннюю картину мира, а не гонимся за оценками. Рядом с каждым ребёнком - тьютор, день выстроен с 8:30 до 16:30: уроки, проекты, отдых и допзанятия в одном месте, домашка не съедает вечер семьи.</div>
+      <div class="ai"><i class="scope"></i><span class="tx" data-text="оценки как самоцель - не обнаружены [0.00]"></span></div>
+    </details>
+    <details class="reveal">
+      <summary>Что будет с оценками и мотивацией? <i>+</i></summary>
+      <div class="a">Мы измеряем рост, а не оцениваем ребёнка. Персональная диагностика на входе, дальше - понятная родителю картина: что получается, где нужна поддержка. Мотивация держится на интересе и проектах, а не на страхе двойки.</div>
+      <div class="ai"><i class="scope"></i><span class="tx" data-text="стресс от двоек - не обнаружен [0.02]"></span></div>
+    </details>
+    <details class="reveal">
+      <summary>Можно ли перевестись из другой школы среди года? <i>+</i></summary>
+      <div class="a">Да, переводы принимаем круглый год. Отдельный маршрут: диагностика, план адаптации, тьютор на первые недели - и быстрые ответы на все вопросы семьи, пока вы принимаете решение.</div>
+      <div class="ai"><i class="scope"></i><span class="tx" data-text="маршрут перевода - построен [1.00]"></span></div>
+    </details>
+    <details class="reveal">
+      <summary>Есть ли онлайн-формат? <i>+</i></summary>
+      <div class="a">Да, полноценная онлайн-школа с кураторами, тьюторами, проектами и олимпиадной подготовкой - тот же подход из любого города.</div>
+      <div class="ai"><i class="scope"></i><span class="tx" data-text="расстояние - не помеха [0.99]"></span></div>
+    </details>
+    <details class="reveal">
+      <summary>Сколько стоит обучение? <i>+</i></summary>
+      <div class="a">Стоимость зависит от программы и формата. Честный первый шаг - бесплатная диагностика и экскурсия: посмотрите школу, получите картину по вашему ребёнку, и мы подберём программу. Возможна оплата материнским капиталом.</div>
+      <div class="ai"><i class="scope"></i><span class="tx" data-text="честный ответ - обнаружен [1.00]"></span></div>
+    </details>
+  </div>
+</section>
+
+<!-- ================= 04 РОСТ ================= -->
+<section id="growth">
+  <div class="kicker reveal"><div class="num">04.</div><i class="scope"></i><div class="name">Рост, который видно</div></div>
+  <div class="grow-wrap">
+    <div class="grow-scale reveal" id="scale">
+      <div class="m" style="bottom:4%"><span>0 класс</span><small>диагностика на входе</small></div>
+      <div class="m" style="bottom:34%"><span>1-4</span><small>фундамент и интерес</small></div>
+      <div class="m" style="bottom:62%"><span>5-9</span><small>проекты и олимпиады</small></div>
+      <div class="m" style="bottom:88%"><span>10-11</span><small>карьерный трек, ЕГЭ</small></div>
+      <div class="runner" id="scaleRunner"></div>
+    </div>
+    <div class="facts">
+      <h3 class="reveal">Мы <em>измеряем</em> рост,<br>а не оцениваем ребёнка.</h3>
+      <p class="reveal">Персональная диагностика на входе показывает точку старта. Дальше рядом с ребёнком - тьютор, а у родителей - понятная картина: что получается, где нужна поддержка, куда двигаемся.</p>
+      <p class="reveal">Олимпиадная школа и проектная деятельность уже включены в программу: от «Моего первого проекта» в 5-7 классе до защиты перед комиссией с представителями вузов в 11-м.</p>
+      <p class="reveal">Формат - очно на Ползунова, 7 или онлайн из любого города.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta-sec" id="start">
+  <div class="cta-box">
+    <div class="thin reveal"><i class="scope" style="display:inline-block;vertical-align:middle;margin-right:10px"></i>Первый шаг</div>
+    <div class="fat reveal">Диагностика</div>
+    <p class="reveal">Бесплатная персональная диагностика и экскурсия по школе: посмотрите пространство, познакомьтесь с тьюторами, получите честную картину по вашему ребёнку.</p>
+    <form class="form reveal" onsubmit="event.preventDefault();this.querySelector('button').textContent='Заявка принята ✓';">
+      <input type="text" placeholder="Имя" required>
+      <input type="tel" placeholder="Телефон" required>
+      <button type="submit">Записаться</button>
+    </form>
+    <div class="form-note reveal">Прототип: форма демонстрационная, данные никуда не отправляются.</div>
+  </div>
+</section>
+
+<footer class="site">
+  <div>ЕЛЬ SCHOOL · частная школа 1-11 класс · гослицензия и аккредитация</div>
+  <div>Новосибирск, Ползунова 7 · тел. 388-74-02</div>
+  <div>прототип v1 · развитие кадра 02</div>
+</footer>
+
+<script>
+/* ===== герои по клавишам ===== */
+const HEROES = {
+  1:{img:'gen/hero-c.png', pos:'66% center', accent:'#5f9e1f', bg:'#eceae5'},
+  2:{img:'gen/hero-b.png', pos:'62% center', accent:'#e84393', bg:'#f2f2f0'},
+  3:{img:'gen/hero-a.png', pos:'right center', accent:'#7aa112', bg:'#efe9dc'},
+  4:{img:'gen/hero-el-a.png', pos:'60% center', accent:'#5f9e1f', bg:'#f0f2f4'},
+  5:{img:'gen/hero-el-b.png', pos:'56% center', accent:'#5f9e1f', bg:'#f4f4f1'},
+};
+let hero = HEROES[1];
+function applyHero(n){
+  hero = HEROES[n];
+  const el = document.getElementById('heroBg');
+  el.style.backgroundImage = `url(${hero.img})`;
+  el.style.backgroundPosition = hero.pos;
+  document.documentElement.style.setProperty('--accent', hero.accent);
+  document.documentElement.style.setProperty('--bg', hero.bg);
+  document.body.style.background = hero.bg;
+}
+addEventListener('keydown', e=>{ if(HEROES[e.key]) applyHero(e.key); });
+document.querySelectorAll('.hero-hint button').forEach(btn=>{
+  btn.addEventListener('click', ()=>applyHero(btn.dataset.h));
+});
+const _applyHero = applyHero;
+applyHero = function(n){
+  _applyHero(n);
+  if(typeof heroKey !== 'undefined'){ heroKey = Number(n); gaze = {i:0, t0:performance.now(), prev:null}; }
+  document.querySelectorAll('.hero-hint button').forEach(b=>b.classList.toggle('on', b.dataset.h===String(n)));
+};
+
+/* ===== живой слой аннотаций на hero ===== */
+const cv = document.getElementById('heroCv');
+const cx = cv.getContext('2d');
+let W,H;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeCv(){
+  const r = cv.getBoundingClientRect();
+  const dpr = Math.min(devicePixelRatio||1,2);
+  W = r.width; H = r.height;
+  cv.width = W*dpr; cv.height = H*dpr;
+  cx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener('resize', sizeCv);
+
+/* ===== сценарий взгляда: осмысленные точки интереса на каждой картинке ===== */
+const IMG_W = 2048, IMG_H = 1152;
+/* координаты - доли ширины/высоты исходной картинки */
+const ANCHORS = {
+  1: [ /* яблоко */
+    {x:.505,y:.20, label:'черенок: настоящий [0.98]'},
+    {x:.42, y:.42, label:'структура: изучена [3.14]'},
+    {x:.60, y:.48, label:'оцифровано: наполовину [0.50]'},
+    {x:.315,y:.45, label:'рост: измеряется [1.00]'},
+    {x:.53, y:.80, label:'тень: мягкая. как адаптация у нас'},
+  ],
+  2: [ /* ребёнок из пикселей */
+    {x:.55, y:.14, label:'идея: собирается [0.87]'},
+    {x:.62, y:.40, label:'знания: 1000+ блоков [1.00]'},
+    {x:.47, y:.55, label:'характер: разноцветный [0.93]'},
+    {x:.55, y:.78, label:'шаг: уверенный [0.95]'},
+    {x:.86, y:.38, label:'родители: впечатлены [0.99]'},
+  ],
+  3: [ /* натюрморт-датамош */
+    {x:.52, y:.40, label:'классика: жива [1.00]'},
+    {x:.47, y:.72, label:'витамины: обнаружены [0.99]'},
+    {x:.70, y:.45, label:'форма: проверена временем'},
+    {x:.82, y:.58, label:'книги: прочитаны [0.87]'},
+    {x:.86, y:.16, label:'будущее: загружается [0.42]'},
+  ],
+  4: [ /* ель А - матрица */
+    {x:.60, y:.12, label:'макушка: тянется вверх [1.00]'},
+    {x:.55, y:.42, label:'хвоя: настоящая [0.99]'},
+    {x:.66, y:.40, label:'оцифровано: наполовину [0.50]'},
+    {x:.60, y:.30, label:'игрушки: не обнаружены [0.00]'},
+    {x:.77, y:.62, label:'рост: по плану [0.97]'},
+    {x:.60, y:.88, label:'корни: крепкие [0.97]'},
+  ],
+  5: [ /* ель Б - саженец */
+    {x:.56, y:.10, label:'новый побег [1.00]'},
+    {x:.47, y:.45, label:'скан: идёт [0.61]'},
+    {x:.62, y:.50, label:'живое: подтверждено [0.99]'},
+    {x:.71, y:.50, label:'отметка роста: новая'},
+    {x:.56, y:.85, label:'почва: подготовлена [1.00]'},
+  ],
+};
+let heroKey = 1;
+let gaze = {i:0, t0:performance.now(), prev:null};
+const FLY = 900, DWELL = 2400; /* мс: перелёт и чтение */
+
+function posPct(){
+  const p = (hero.pos||'50% center').split(' ')[0];
+  if(p==='right') return 1;
+  if(p==='left') return 0;
+  return parseFloat(p)/100;
+}
+/* точка картинки -> экран: cover + позиция + transform параллакса */
+function imgToScreen(fx,fy){
+  const s0 = Math.max(W/IMG_W, H/IMG_H);
+  const offX = (W - IMG_W*s0)*posPct();
+  const offY = (H - IMG_H*s0)*0.5;
+  let px = offX + fx*IMG_W*s0;
+  let py = offY + fy*IMG_H*s0;
+  const sy = Math.min(scrollY, innerHeight);
+  px = W/2 + (px - W/2)*1.05 - pmx;
+  py = H/2 + (py - H/2)*1.05 + sy*.18 - pmy;
+  return [px,py];
+}
+function ease(k){ return k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2; }
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+/* пыльца: медленный ток вверх над hero */
+let pollen = [];
+function seedPollen(){
+  pollen = [];
+  const n = W<760 ? 26 : 60;
+  for(let i=0;i<n;i++) pollen.push({
+    x:Math.random()*W, y:Math.random()*H,
+    r:.8+Math.random()*1.8, sp:.12+Math.random()*.4,
+    ph:Math.random()*6.28, gold:Math.random()<.25
+  });
+}
+
+/* параллакс hero: скролл + курсор */
+let pmx=0, pmy=0, ptx=0, pty=0;
+addEventListener('pointermove', e=>{
+  ptx=(e.clientX/innerWidth-.5)*18; pty=(e.clientY/innerHeight-.5)*12;
+});
+const heroBgEl = document.getElementById('heroBg');
+function parallax(){
+  pmx+=(ptx-pmx)*.05; pmy+=(pty-pmy)*.05;
+  const sy = Math.min(scrollY, innerHeight);
+  heroBgEl.style.transform = `translate(${-pmx}px, ${sy*.18 - pmy}px) scale(1.05)`;
+}
+
+function draw(){
+  const now = performance.now();
+  const t = now/1000;
+  cx.clearRect(0,0,W,H);
+  cx.lineWidth=1;
+  parallax();
+  if(!reduced) for(const p of pollen){
+    p.y -= p.sp; if(p.y < -4){ p.y = H+4; p.x = Math.random()*W; }
+    const x = p.x + Math.sin(t*.7+p.ph)*8;
+    const tw = .35+.65*Math.sin(t*1.3+p.ph)**2;
+    cx.fillStyle = p.gold ? hexA('#c9a44a', .30*tw) : hexA('#5f9e1f', .22*tw);
+    cx.beginPath(); cx.arc(x, p.y, p.r, 0, 6.284); cx.fill();
+  }
+  /* ===== взгляд: рамка осмысленно перелетает по точкам интереса ===== */
+  if(scrollY < innerHeight*1.1){
+    const anchors = ANCHORS[heroKey] || ANCHORS[1];
+    const cur = anchors[gaze.i % anchors.length];
+    const prev = anchors[(gaze.i-1+anchors.length) % anchors.length];
+    const dt = now - gaze.t0;
+    if(dt > FLY+DWELL && !reduced){ gaze.i=(gaze.i+1)%anchors.length; gaze.t0=now; }
+    const k = reduced ? 1 : Math.min(1, dt/FLY);
+    const e = ease(k);
+    const [ax,ay] = imgToScreen(cur.x, cur.y);
+    const [px,py] = imgToScreen(prev.x, prev.y);
+    const gx = px+(ax-px)*e, gy = py+(ay-py)*e;
+
+    cx.font='10.5px "Segoe UI",sans-serif';
+
+    /* эхо предыдущей точки затухает */
+    if(!reduced && dt < 900){
+      const fa = 1-dt/900;
+      cx.strokeStyle=hexA('#16181a',.22*fa);
+      cx.beginPath(); cx.arc(px,py,7,0,6.284); cx.stroke();
+    }
+
+    /* прицел: пульс после прилёта */
+    const settled = k>=1;
+    const pulse = settled ? 1+.14*Math.sin((dt-FLY)/260) : 1;
+    cx.strokeStyle=hexA('#16181a',.55);
+    cx.beginPath(); cx.arc(gx,gy,6*pulse,0,6.284); cx.stroke();
+    cx.beginPath(); cx.moveTo(gx-11*pulse,gy); cx.lineTo(gx-4,gy);
+    cx.moveTo(gx+4,gy); cx.lineTo(gx+11*pulse,gy);
+    cx.moveTo(gx,gy-11*pulse); cx.lineTo(gx,gy-4);
+    cx.moveTo(gx,gy+4); cx.lineTo(gx,gy+11*pulse); cx.stroke();
+
+    /* подпись печатается по буквам после прилёта */
+    const label = cur.label;
+    const chars = reduced ? label.length :
+      settled ? Math.min(label.length, Math.floor((dt-FLY)/26)) : 0;
+    const txt = label.slice(0, chars);
+    const tw = cx.measureText(label).width;
+    const bw = Math.max(56, tw+20), bh = 26;
+    let bx = Math.min(Math.max(12, gx+18), W-bw-12);
+    let by = Math.min(Math.max(12, gy-44), H-bh-12);
+    cx.strokeStyle=hexA('#16181a',.5);
+    cx.strokeRect(bx,by,bw,bh);
+    cx.fillStyle=hexA('#16181a',.55);
+    cx.fillRect(bx-2,by-2,4,4);
+    cx.strokeStyle=hexA('#16181a',.25);
+    cx.beginPath(); cx.moveTo(bx+ (gx>bx+bw/2 ? bw : 0), by+bh);
+    cx.lineTo(gx, gy); cx.stroke();
+    if(txt){
+      cx.fillStyle=hexA('#16181a',.8);
+      cx.fillText(txt, bx+10, by+bh/2+3.5);
+      if(!reduced && chars<label.length && Math.sin(now/120)>0){
+        const cw = cx.measureText(txt).width;
+        cx.fillRect(bx+11+cw, by+7, 1.5, bh-14);
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+
+/* ===== reveal по скроллу ===== */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('on'); });
+},{threshold:.18});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+/* страховка: если observer не сработал (старый браузер, печать) - раскрыть всё */
+setTimeout(()=>document.querySelectorAll('.reveal:not(.on)').forEach(el=>el.classList.add('on')), 1800);
+
+/* ===== FAQ: ремарка ИИ печатается при раскрытии вопроса ===== */
+function typeAi(d){
+  const ai = d.querySelector('.ai');
+  if(!ai || ai.dataset.busy) return;
+  const tx = ai.querySelector('.tx');
+  const full = tx.dataset.text || '';
+  ai.dataset.busy = '1';
+  ai.classList.remove('done');
+  tx.textContent = '';
+  if(reduced){ tx.textContent = full; ai.classList.add('done'); return; }
+  let i = 0;
+  const tick = setInterval(()=>{
+    tx.textContent = full.slice(0, ++i);
+    if(i >= full.length){ clearInterval(tick); ai.classList.add('done'); delete ai.dataset.busy; }
+  }, 28);
+}
+document.querySelectorAll('.faq details').forEach(d=>{
+  d.addEventListener('toggle', ()=>{ if(d.open) typeAi(d); });
+});
+/* первый открытый вопрос печатается, когда секция доехала до экрана */
+const faqIo = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.faq details[open]').forEach(typeAi);
+      faqIo.disconnect();
+    }
+  });
+},{threshold:.3});
+const faqEl = document.querySelector('.faq');
+if(faqEl) faqIo.observe(faqEl);
+
+/* ===== ростомер = прогресс скролла ===== */
+function onScroll(){
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const p = Math.min(1, Math.max(0, scrollY/max));
+  document.getElementById('growthFill').style.height = (p*100)+'%';
+  document.getElementById('growthDot').style.bottom = `calc(${p*100}% - 3px)`;
+  /* бегунок на шкале раздела 03 */
+  const sc = document.getElementById('scale');
+  const r = sc.getBoundingClientRect();
+  const vis = Math.min(1, Math.max(0, (innerHeight*0.75 - r.top) / r.height));
+  document.getElementById('scaleRunner').style.bottom = (vis*88)+'%';
+}
+addEventListener('scroll', onScroll, {passive:true});
+
+/* метки на ростомере-прогрессе */
+(function(){
+  const g = document.getElementById('growthBar');
+  [['0',4],['1-4',34],['5-9',62],['10-11',88]].forEach(([t,p])=>{
+    const m = document.createElement('div');
+    m.className='mark'; m.style.bottom=p+'%';
+    m.innerHTML=`<span>${t}</span>`;
+    g.appendChild(m);
+  });
+})();
+
+sizeCv();
+seedPollen();
+addEventListener('resize', seedPollen);
+applyHero(5); /* дефолт: ель Б (саженец), яблоко осталось кнопкой */
+requestAnimationFrame(draw);
+onScroll();
+</script>
+</body>
+</html>

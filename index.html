@@ -249,6 +249,10 @@
     #s6 .sbg{background-position:center 30%}
     #s8 .sbg{background-position:center 26%}
     #s10 .sbg{background-position:58% 36%}
+    /* рюкзак пёстрый - под текстом почти глухая заливка, сверху остаётся видимым */
+    #s10 .scrim{background:linear-gradient(0deg,
+      rgba(242,242,239,.99) 0%, rgba(242,242,239,.96) 48%,
+      rgba(242,242,239,.72) 68%, rgba(242,242,239,.18) 88%, rgba(242,242,239,0) 100%)}
     .sticky-cta{right:14px;bottom:14px;padding:12px 16px;font-size:10px;letter-spacing:.14em}
     .shot img{height:170px}
     .shot .ann i{font-size:8px;top:-20px}
@@ -466,6 +470,25 @@
 document.documentElement.classList.replace('no-js','js');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ACCENT = '#5f9e1f';
+
+/* ===== скролл: обновление страницы всегда открывает верх ===== */
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+if(location.hash){
+  history.replaceState(null, '', location.pathname + location.search);
+  const de = document.documentElement;
+  de.style.scrollBehavior = 'auto';
+  scrollTo(0, 0);
+  requestAnimationFrame(()=>{ de.style.scrollBehavior = ''; });
+}
+/* якорные ссылки скроллят без записи #hash в URL */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', ev=>{
+    const t = document.getElementById(a.getAttribute('href').slice(1));
+    if(!t) return;
+    ev.preventDefault();
+    t.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'start'});
+  });
+});
 
 /* ===== форма: заявка в защищённое хранилище ===== */
 const leadForm = document.getElementById('leadForm');

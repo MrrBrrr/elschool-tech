@@ -186,7 +186,6 @@
   @media (max-width:760px){
     header{padding:14px 20px 22px}
     .logo{font-size:11px;letter-spacing:.3em}
-    canvas#gz{display:none}
     .slide{align-items:flex-end}
     .slide.center{align-items:center}
     .content{padding:0 20px 78px;max-width:100%}
@@ -523,16 +522,35 @@ function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255}
 function anchorsOf(s){
   try{ return JSON.parse(s.dataset.anchors||'null'); }catch(e){ return null; }
 }
+function slidePos(slide){
+  /* доли background/object-position, кэш до ресайза */
+  if(slide._pos) return slide._pos;
+  let px=.5, py=.5;
+  const vid = slide.querySelector('.sbg video');
+  const el = vid || slide.querySelector('.sbg');
+  if(el){
+    const cs = getComputedStyle(el);
+    const raw = vid ? cs.objectPosition : cs.backgroundPosition;
+    const m = raw.match(/([\d.]+)%\s+([\d.]+)%/);
+    if(m){ px = parseFloat(m[1])/100; py = parseFloat(m[2])/100; }
+  }
+  slide._pos = [px,py];
+  return slide._pos;
+}
+addEventListener('resize', ()=>slides.forEach(s=>{ delete s._pos; }));
 function imgToScreen(slide, fx, fy){
   const r = slide.getBoundingClientRect();
+  const [ppx,ppy] = slidePos(slide);
   const s0 = Math.max(r.width/IMG_W, r.height/IMG_H);
-  const offX = r.left + (r.width - IMG_W*s0)/2;
-  const offY = r.top + (r.height - IMG_H*s0)/2;
+  const offX = r.left + (r.width - IMG_W*s0)*ppx;
+  const offY = r.top + (r.height - IMG_H*s0)*ppy;
   let px = offX + fx*IMG_W*s0;
   let py = offY + fy*IMG_H*s0;
+  /* тот же transform, что у фона: scale(1.045) + параллакс */
   const cxr = r.left + r.width/2, cyr = r.top + r.height/2;
-  px = cxr + (px-cxr)*1.045 - pmx;
-  py = cyr + (py-cyr)*1.045 - pmy;
+  const k = r.top / innerHeight;
+  px = cxr + (px-cxr)*1.045 - pmx*.6;
+  py = cyr + (py-cyr)*1.045 + k*-26 - pmy*.6;
   return [px,py];
 }
 
@@ -553,7 +571,7 @@ function draw(){
   }
 
   const slide = slides[active];
-  const anchors = (innerWidth <= 760) ? null : (slide ? anchorsOf(slide) : null);
+  const anchors = slide ? anchorsOf(slide) : null;
   if(anchors && anchors.length){
     const cur = anchors[gaze.i % anchors.length];
     const prev = anchors[(gaze.i-1+anchors.length)%anchors.length];

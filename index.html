@@ -216,7 +216,7 @@
     .sticky-cta{right:14px;bottom:14px;padding:12px 16px;font-size:10px;letter-spacing:.14em}
     .shot img{height:170px}
     .shot .ann i{font-size:8px;top:-20px}
-    .form input{min-width:0;flex:1 1 100%}
+    .form input{min-width:0;flex:1 1 100%;font-size:16px}
     .form button{flex:1 1 100%}
     .faq summary{font-size:14px;padding:14px 0}
     .faq .a{font-size:12.5px}
@@ -511,16 +511,20 @@ const railDots = [...rail.querySelectorAll('a')];
 
 /* ===== активный слайд ===== */
 let active = 0;
-const actIo = new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio > .55){
-      active = slides.indexOf(e.target);
-      railDots.forEach((d,i)=>d.classList.toggle('on', i===active));
-      gaze = {i:0, t0:performance.now()};
+function updateActive(){
+  const mid = innerHeight/2;
+  for(let i=0;i<slides.length;i++){
+    const r = slides[i].getBoundingClientRect();
+    if(r.top <= mid && r.bottom > mid){
+      if(active !== i){
+        active = i;
+        railDots.forEach((d,j)=>d.classList.toggle('on', j===active));
+        gaze = {i:0, t0:performance.now()};
+      }
+      break;
     }
-  });
-},{threshold:[.55]});
-slides.forEach(s=>actIo.observe(s));
+  }
+}
 
 addEventListener('scroll', ()=>{
   const max = document.documentElement.scrollHeight - innerHeight;
@@ -607,6 +611,7 @@ function imgToScreen(slide, fx, fy){
 
 function draw(){
   if(!rafOn) return;
+  updateActive();
   const now = performance.now();
   pmx+=(ptx-pmx)*.05; pmy+=(pty-pmy)*.05;
   cx.clearRect(0,0,W,H);
@@ -639,9 +644,9 @@ function draw(){
       /* --- мобильный взгляд: точка, сканер-линия, пилюля --- */
       const sr = slide.getBoundingClientRect();
       const label = cur[3] || cur[2];
-      const chars = reduced?label.length:settled?Math.min(label.length,Math.floor((dt-FLY)/30)):0;
-      const txt = label.slice(0,chars);
       const settled2 = k>=1;
+      const chars = reduced?label.length:settled2?Math.min(label.length,Math.floor((dt-FLY)/30)):0;
+      const txt = label.slice(0,chars);
 
       /* дрейфующая линия-сканер */
       if(!reduced){
@@ -679,7 +684,13 @@ function draw(){
       cx.strokeStyle= (settled2&&chars>=label.length)?hexA(ACCENT,.85):hexA('#16181a',.3);
       cx.lineWidth=0.9;
       cx.beginPath();
-      if(cx.roundRect) cx.roundRect(chX,chY,chW,chH,chH/2); else cx.rect(chX,chY,chW,chH);
+      const r2 = chH/2;
+      cx.moveTo(chX+r2, chY);
+      cx.lineTo(chX+chW-r2, chY);
+      cx.arc(chX+chW-r2, chY+r2, r2, -Math.PI/2, Math.PI/2);
+      cx.lineTo(chX+r2, chY+chH);
+      cx.arc(chX+r2, chY+r2, r2, Math.PI/2, -Math.PI/2);
+      cx.closePath();
       cx.fill();cx.stroke();
       /* пульс-точка внутри */
       const dp = 1+.3*Math.sin(now/500);

@@ -284,7 +284,7 @@
 <!-- 4. ТЬЮТОР: duo -->
 <section class="slide" id="s4" data-img="gen/var-b-duo.webp"
   data-anchors='[[0.75,0.22,"наклонился: слушает [0.99]"],[0.63,0.52,"услышан [1.00]"],[0.7,0.85,"на одной земле [0.97]"]]'>
-  <div class="sbg" style="background-image:url(gen/var-b-duo.webp)"></div>
+  <div class="sbg"><video id="duoVid" src="gen/video-b-duo-web.mp4" poster="gen/var-b-duo.webp" muted playsinline preload="none"></video></div>
   <div class="scrim"></div>
   <div class="content">
     <div class="num reveal">03.<i class="scope"></i></div>
@@ -434,6 +434,28 @@ if(walkVid){
     if(e.target.closest('a,button,input')) return;
     walkVid.currentTime = 0;
     const pr = walkVid.play(); if(pr && pr.catch) pr.catch(()=>{});
+  });
+}
+/* видео «Тьютор»: стартует, когда слайд виден; оседает и замирает; клик - повтор */
+const duoVid = document.getElementById('duoVid');
+if(duoVid){
+  duoVid.addEventListener('timeupdate', ()=>{
+    if(duoVid.duration && duoVid.currentTime >= duoVid.duration - 0.12) duoVid.pause();
+  });
+  try{
+    const dio = new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(e.isIntersecting && !reduced && duoVid.paused && duoVid.currentTime === 0){
+          const pr = duoVid.play(); if(pr && pr.catch) pr.catch(()=>{});
+        }
+      });
+    },{threshold:.5});
+    dio.observe(document.getElementById('s4'));
+  }catch(e){}
+  document.getElementById('s4').addEventListener('click', e=>{
+    if(e.target.closest('a,button,input')) return;
+    duoVid.currentTime = 0;
+    const pr = duoVid.play(); if(pr && pr.catch) pr.catch(()=>{});
   });
 }
 

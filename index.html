@@ -605,34 +605,35 @@ function draw(){
     const [px,py]=imgToScreen(slide,prev[0],prev[1]);
     const gx=px+(ax-px)*e, gy=py+(ay-py)*e;
 
-    cx.lineWidth=1;
-    cx.font='10.5px "Segoe UI",sans-serif';
+    const M = innerWidth<=760 ? 0.68 : 1;   /* мобильный масштаб взгляда */
+    cx.lineWidth=M<1?0.8:1;
+    cx.font=(M<1?'8.5px':'10.5px')+' "Segoe UI",sans-serif';
 
     if(!reduced && dt<900){
       const fa=1-dt/900;
       cx.strokeStyle=hexA('#16181a',.2*fa);
-      cx.beginPath();cx.arc(px,py,7,0,6.284);cx.stroke();
+      cx.beginPath();cx.arc(px,py,7*M,0,6.284);cx.stroke();
     }
     const settled=k>=1;
     const pulse=settled?1+.14*Math.sin((dt-FLY)/260):1;
     cx.strokeStyle=hexA('#16181a',.55);
-    cx.beginPath();cx.arc(gx,gy,6*pulse,0,6.284);cx.stroke();
+    cx.beginPath();cx.arc(gx,gy,6*M*pulse,0,6.284);cx.stroke();
     cx.beginPath();
-    cx.moveTo(gx-11*pulse,gy);cx.lineTo(gx-4,gy);
-    cx.moveTo(gx+4,gy);cx.lineTo(gx+11*pulse,gy);
-    cx.moveTo(gx,gy-11*pulse);cx.lineTo(gx,gy-4);
-    cx.moveTo(gx,gy+4);cx.lineTo(gx,gy+11*pulse);cx.stroke();
+    cx.moveTo(gx-11*M*pulse,gy);cx.lineTo(gx-4*M,gy);
+    cx.moveTo(gx+4*M,gy);cx.lineTo(gx+11*M*pulse,gy);
+    cx.moveTo(gx,gy-11*M*pulse);cx.lineTo(gx,gy-4*M);
+    cx.moveTo(gx,gy+4*M);cx.lineTo(gx,gy+11*M*pulse);cx.stroke();
 
     const label=cur[2];
     const chars=reduced?label.length:settled?Math.min(label.length,Math.floor((dt-FLY)/26)):0;
     const txt=label.slice(0,chars);
     const tw=cx.measureText(label).width;
-    const bw=Math.max(56,tw+20), bh=26;
+    const bw=Math.max(44*M+12,tw+16*M), bh=Math.round(26*M)+ (M<1?0:0);
     const sr = slide.getBoundingClientRect();
     const L = Math.max(12, sr.left+10), R = Math.min(W-12, sr.right-10);
     const T = Math.max(76, sr.top+10), B = Math.min(H-12, sr.bottom-10);
-    let bx=Math.min(Math.max(L, gx+18), R-bw);
-    let by=Math.min(Math.max(T, gy-44), B-bh);
+    let bx=Math.min(Math.max(L, gx+18*M), R-bw);
+    let by=Math.min(Math.max(T, gy-44*M), B-bh);
 
     /* белая подложка - подпись читаема на любом фоне */
     cx.fillStyle='rgba(255,255,255,.93)';
@@ -645,10 +646,10 @@ function draw(){
     cx.beginPath();cx.moveTo(bx+(gx>bx+bw/2?bw:0),by+bh);cx.lineTo(gx,gy);cx.stroke();
     if(txt){
       cx.fillStyle=hexA('#16181a',.85);
-      cx.fillText(txt,bx+10,by+bh/2+3.5);
+      cx.fillText(txt,bx+9*M,by+bh/2+3.2);
       if(!reduced&&chars<label.length&&Math.sin(now/120)>0){
         const cw=cx.measureText(txt).width;
-        cx.fillRect(bx+11+cw,by+7,1.5,bh-14);
+        cx.fillRect(bx+10*M+cw,by+6*M,1.2,bh-12*M);
       }
     }
 
@@ -658,10 +659,10 @@ function draw(){
       const ca = reduced?1:Math.min(1,(dt-FLY-label.length*26)/320);
       const ACC = ACCENT;
       cx.strokeStyle=hexA(ACC,.85*ca);
-      cx.strokeRect(bx-3,by-3,bw+6,bh+6);
-      cx.beginPath();cx.arc(gx,gy,11*pulse,0,6.284);cx.stroke();
+      cx.strokeRect(bx-3*M,by-3*M,bw+6*M,bh+6*M);
+      cx.beginPath();cx.arc(gx,gy,11*M*pulse,0,6.284);cx.stroke();
       cx.fillStyle=hexA(ACC,.9*ca);
-      cx.fillRect(bx+bw-5,by-5,4,4);
+      cx.fillRect(bx+bw-5*M,by-5*M,4*M,4*M);
     }
   }
   requestAnimationFrame(draw);

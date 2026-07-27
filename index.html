@@ -167,6 +167,14 @@
     font-size:11.5px;color:var(--ink-dim);
   }
   canvas#gz{position:fixed;inset:0;z-index:20;pointer-events:none}
+  .plate{
+    position:absolute;right:26px;bottom:22px;z-index:6;
+    font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(22,24,26,.45);
+    padding:6px 10px;border-right:2px solid var(--accent);
+    background:rgba(242,242,239,.55);
+  }
+  @media(max-width:760px){.plate{right:14px;bottom:64px;font-size:8.5px}}
   @media (prefers-reduced-motion: reduce){
     html{scroll-snap-type:none;scroll-behavior:auto}
     .js .reveal{opacity:1;transform:none;transition:none}
@@ -241,6 +249,7 @@
     тьюторы и допзанятия с 8:30 до 16:30. Рост ребёнка виден каждую неделю.</p>
     <a class="cta reveal" href="#s10">Записаться на диагностику</a>
   </div>
+  <div class="plate">кадр 01 · путь в школу</div>
 </section>
 
 <!-- 2. МАРШРУТ: grow -->
@@ -255,6 +264,7 @@
     без пересадок. Перевод из другой школы - круглый год, онлайн-формат - из любого города.</p>
     <p class="reveal">На входе - персональная диагностика: честная точка старта и план роста.</p>
   </div>
+  <div class="plate">кадр 02 · рост</div>
 </section>
 
 <!-- 3. УЧЁБА: board -->
@@ -269,6 +279,7 @@
     школа включены в программу: от «Моего первого проекта» в 5-7 классе до защиты перед
     комиссией с представителями вузов.</p>
   </div>
+  <div class="plate">кадр 03 · у доски</div>
 </section>
 
 <!-- 4. ТЬЮТОР: duo -->
@@ -283,6 +294,7 @@
     выстроить свой путь. Родители получают понятную картину: что получается, где нужна
     поддержка, куда двигаемся.</p>
   </div>
+  <div class="plate">кадр 04 · тьютор</div>
 </section>
 
 <!-- 5. СРЕДА: high5 -->
@@ -296,6 +308,7 @@
     <p class="reveal">Маленькие классы, общие проекты и допзанятия на одной площадке - от
     спорта до творчества. Здесь не выживают на переменах, здесь дружат.</p>
   </div>
+  <div class="plate">кадр 05 · вместе</div>
 </section>
 
 <!-- 6. ЗНАНИЯ: read -->
@@ -309,6 +322,7 @@
     <p class="reveal">Глубокое чтение, исследовательские задачи и дискуссии - вместо
     пересказа параграфов. Домашка не съедает вечер семьи: всё главное происходит в школе.</p>
   </div>
+  <div class="plate">кадр 06 · чтение</div>
 </section>
 
 <!-- 7. РЕАЛЬНАЯ ШКОЛА: фото -->
@@ -324,6 +338,7 @@
     <p class="reveal" style="margin-top:18px">Реальные интерьеры школы на Ползунова, 7. Кадры с детьми появятся
     после согласования с родителями - так положено, и мы так делаем.</p>
   </div>
+  <div class="plate">кадр 07 · школа, ползунова 7</div>
 </section>
 
 <!-- 8. ФИНАЛ МАРШРУТА: graduate -->
@@ -337,6 +352,7 @@
     <p class="reveal">Карьерный трек, подготовка к ОГЭ и ЕГЭ, «Мой главный проект» перед комиссией
     с представителями вузов. Выпускник выходит не с одними баллами - с пониманием, куда и зачем идёт.</p>
   </div>
+  <div class="plate">кадр 08 · выпускник</div>
 </section>
 
 <!-- 9. FAQ -->
@@ -372,6 +388,7 @@
       </details>
     </div>
   </div>
+  <div class="plate">кадр 09 · вопросы</div>
 </section>
 
 <!-- 10. CTA: backpack -->
@@ -391,12 +408,13 @@
     </form>
     <div class="form-note reveal">Прототип: форма демонстрационная, данные никуда не отправляются.</div>
   </div>
+  <div class="plate">кадр 10 · первый шаг</div>
 </section>
 
 <footer class="site">
   <div>ЕЛЬ SCHOOL · частная школа 1-11 класс · гослицензия и аккредитация</div>
   <div>Новосибирск, Ползунова 7 · тел. 388-74-02</div>
-  <div>прототип v2 · сайт-слайды пиксельной линии</div>
+  <div>© Ель School, 2026</div>
 </footer>
 
 <script>
@@ -570,8 +588,11 @@ function draw(){
     const txt=label.slice(0,chars);
     const tw=cx.measureText(label).width;
     const bw=Math.max(56,tw+20), bh=26;
-    let bx=Math.min(Math.max(12,gx+18),W-bw-12);
-    let by=Math.min(Math.max(76,gy-44),H-bh-12);
+    const sr = slide.getBoundingClientRect();
+    const L = Math.max(12, sr.left+10), R = Math.min(W-12, sr.right-10);
+    const T = Math.max(76, sr.top+10), B = Math.min(H-12, sr.bottom-10);
+    let bx=Math.min(Math.max(L, gx+18), R-bw);
+    let by=Math.min(Math.max(T, gy-44), B-bh);
 
     /* белая подложка - подпись читаема на любом фоне */
     cx.fillStyle='rgba(255,255,255,.93)';

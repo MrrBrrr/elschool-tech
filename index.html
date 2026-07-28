@@ -452,7 +452,7 @@
     познакомьтесь с тьюторами, получите честную картину по вашему ребёнку.</p>
     <form class="form reveal" id="leadForm">
       <input type="text" name="name" autocomplete="name" aria-label="Имя" placeholder="Имя" required>
-      <input type="tel" name="phone" autocomplete="tel" aria-label="Телефон" placeholder="Телефон" required>
+      <input type="tel" name="phone" autocomplete="tel" aria-label="Телефон" placeholder="+7 900 000-00-00" required>
       <button type="submit">Записаться</button>
     </form>
     <div class="form-note reveal" id="leadNote" aria-live="polite">Оставьте телефон - перезвоним в рабочее время и договоримся о визите.</div>
@@ -498,9 +498,25 @@ if(leadForm){
     e.preventDefault();
     const btn = leadForm.querySelector('button');
     const note = document.getElementById('leadNote');
+    /* защита от мусора: имя от 2 букв, телефон - реальный российский номер */
+    const nameVal = leadForm.name.value.trim();
+    const digits = leadForm.phone.value.replace(/\D/g, '');
+    const phoneOk = (digits.length === 11 && (digits[0] === '7' || digits[0] === '8'))
+                 || (digits.length === 10 && digits[0] === '9');
+    if(nameVal.length < 2){
+      note.textContent = 'Подскажите имя - как к вам обращаться?';
+      leadForm.name.focus();
+      return;
+    }
+    if(!phoneOk){
+      note.textContent = 'Проверьте телефон: нужен номер вида +7 900 000-00-00 - иначе не сможем перезвонить.';
+      leadForm.phone.focus();
+      return;
+    }
+    const phoneNorm = '+7' + (digits.length === 11 ? digits.slice(1) : digits);
     const fd = new FormData();
-    fd.append('entry.1100695434', leadForm.name.value.trim());
-    fd.append('entry.419055877', leadForm.phone.value.trim());
+    fd.append('entry.1100695434', nameVal);
+    fd.append('entry.419055877', phoneNorm);
     fd.append('entry.1850239562', 'elschool.tech');
     btn.disabled = true; btn.textContent = 'Отправляем…';
     fetch(FORM_URL, {method:'POST', mode:'no-cors', body:fd}).then(()=>{

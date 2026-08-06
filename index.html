@@ -14,7 +14,19 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://elschool.tech/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<!-- Yandex.Metrika -->
+<script>
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
+</script>
+<!-- /Yandex.Metrika -->
+<!-- Calltouch -->
+<script>
+(function(w,d,n,c){w.CalltouchDataObject=n;w[n]=function(){w[n]["callbacks"].push(arguments)};if(!w[n]["callbacks"]){w[n]["callbacks"]=[]}w[n]["loaded"]=false;if(typeof c!=="object"){c=[c]}w[n]["counters"]=c;for(var i=0;i<c.length;i+=1){p(c[i])}function p(cId){var a=d.getElementsByTagName("script")[0],s=d.createElement("script"),i=function(){a.parentNode.insertBefore(s,a)},m=typeof Array.prototype.find === "function",n=m?"init-min.js":"init.js";s.async=true;s.src="https://mod.calltouch.ru/"+n+"?id="+cId;if(w.opera=="[object Opera]"){d.addEventListener("DOMContentLoaded",i,false)}else{i()}}})(window,document,"ct","4oggmizy");
+</script>
+<!-- /Calltouch -->
 <style>
   :root{
     --bg:#f2f2ef;
@@ -501,6 +513,21 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 });
 
+/* ===== атрибуция: первый и последний входящий канал ===== */
+const ATTRIBUTION_KEY = "elschoolTechAttributionV1";
+const ATTRIBUTION_KEYS = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","yclid","gclid","fbclid"];
+function attributionSnapshot(){
+  const query = new URLSearchParams(location.search);
+  const touch = {landing_path: location.pathname, referrer: document.referrer || "(direct)", captured_at: new Date().toISOString()};
+  ATTRIBUTION_KEYS.forEach(key => { if(query.get(key)) touch[key] = query.get(key); });
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "{}"); } catch (_) {}
+  const next = {first: saved.first || touch, last: touch};
+  try { localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(next)); } catch (_) {}
+  return next;
+}
+const attribution = attributionSnapshot();
+
 /* ===== форма: заявка в защищённое хранилище ===== */
 const leadForm = document.getElementById('leadForm');
 if(leadForm){
@@ -531,7 +558,17 @@ if(leadForm){
     fd.append('entry.1850239562', 'elschool.tech');
     btn.disabled = true; btn.textContent = 'Отправляем…';
     fetch(FORM_URL, {method:'POST', mode:'no-cors', body:fd}).then(()=>{
-      btn.textContent = 'Заявка отправлена ✓';
+      if(typeof ym === "function"){
+        const last = attribution.last || {};
+        ym(80492089, "reachGoal", "elschool_tech_form_submit", {
+          utm_source: last.utm_source || "(none)",
+          utm_medium: last.utm_medium || "(none)",
+          utm_campaign: last.utm_campaign || "(none)",
+          landing_path: last.landing_path || location.pathname,
+          referrer: last.referrer || "(direct)"
+        });
+      }
+      btn.textContent = "Заявка отправлена ✓";
       note.textContent = 'Спасибо! Перезвоним в рабочее время. Если срочно - 388-74-02.';
       leadForm.reset();
     }).catch(()=>{

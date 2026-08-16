@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сколько на самом деле стоит учебный год - расчёт для родителей, Новосибирск</title>
+<meta name="description" content="Продлёнка, репетиторы, кружки, питание и дорога складываются в сумму, которую редко считают целиком. Посчитайте свой учебный год и сравните с полным днём в школе.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ель School">
+<meta property="og:title" content="Сколько на самом деле стоит ваш учебный год">
+<meta property="og:description" content="Считаем то, что семья уже тратит: продлёнка, репетиторы, кружки, питание, дорога.">
+<meta property="og:url" content="https://elschool.tech/skolko-stoit-god/">
+<meta property="og:image" content="https://elschool.tech/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://elschool.tech/skolko-stoit-god/">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="../assets/landing.css">
+<!-- Yandex.Metrika -->
+<script>
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
+</script>
+<!-- /Yandex.Metrika -->
+<!-- Calltouch -->
+<script>
+(function(w,d,n,c){w.CalltouchDataObject=n;w[n]=function(){w[n]["callbacks"].push(arguments)};if(!w[n]["callbacks"]){w[n]["callbacks"]=[]}w[n]["loaded"]=false;if(typeof c!=="object"){c=[c]}w[n]["counters"]=c;for(var i=0;i<c.length;i+=1){p(c[i])}function p(cId){var a=d.getElementsByTagName("script")[0],s=d.createElement("script"),i=function(){a.parentNode.insertBefore(s,a)},m=typeof Array.prototype.find === "function",n=m?"init-min.js":"init.js";s.async=true;s.src="https://mod.calltouch.ru/"+n+"?id="+cId;if(w.opera=="[object Opera]"){d.addEventListener("DOMContentLoaded",i,false)}else{i()}}})(window,document,"ct","4oggmizy");
+</script>
+<!-- /Calltouch -->
+<style>
+  .calc{display:grid;gap:14px;max-width:640px;margin-top:24px}
+  .calc label{display:grid;grid-template-columns:1fr 160px;gap:14px;align-items:center;font-size:17px}
+  .calc label span{color:var(--ink-dim)}
+  .calc input{padding:13px 14px;font:inherit;font-size:16px;background:#fff;border:1px solid var(--line);color:var(--ink);text-align:right}
+  .calc input:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .calc .hint{font-size:13px;color:var(--ink-dim);grid-column:1 / -1;margin-top:-8px}
+  .result{margin-top:28px;padding:26px;background:#fff;border:1px solid var(--line);max-width:640px}
+  .result .row{display:flex;justify-content:space-between;gap:16px;font-size:17px;padding:8px 0}
+  .result .row b{font-size:22px;font-variant-numeric:tabular-nums}
+  .result .diff{margin-top:14px;padding-top:16px;border-top:1px solid var(--line)}
+  .result .diff .word{font-size:15px;color:var(--ink-dim)}
+  .result .diff .val{font-size:28px;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+  @media(max-width:600px){
+    .calc label{grid-template-columns:1fr;gap:6px}
+    .calc input{text-align:left}
+  }
+</style>
+</head>
+<body data-landing="skolko-stoit-god">
+
+<header>
+  <div class="wrap row">
+    <a href="/" class="logo">ЕЛЬ<b>·</b>SCHOOL</a>
+    <a class="tel" href="tel:+73833887402">388-74-02</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="bg" style="background-image:url(../gen/var-b-read.webp)" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <h1>Сколько на самом деле стоит <em>ваш учебный год</em></h1>
+    <p class="lead">Обучение в обычной школе бесплатное, а учебный год - нет.
+      Продлёнка, репетитор, кружки, питание и дорога складываются в сумму,
+      которую почти никто не считает целиком. Посчитайте свою.</p>
+    <a class="btn" href="#calc">Посчитать</a>
+    <div class="note">Ничего не отправляем и никуда не записываем: расчёт остаётся у вас на экране.</div>
+  </div>
+</section>
+
+<section class="block" id="calc">
+  <div class="wrap">
+    <h2>Что вы платите сейчас</h2>
+    <p>Впишите свои суммы. Пустое поле - значит этой статьи у вас нет.</p>
+    <form class="calc" id="calcForm" novalidate>
+      <label><span>Продлёнка или няня после уроков</span>
+        <input type="number" inputmode="numeric" min="0" step="500" id="prodlenka" placeholder="₽ в месяц"></label>
+      <label><span>Репетиторы и подготовка</span>
+        <input type="number" inputmode="numeric" min="0" step="500" id="repetitor" placeholder="₽ в месяц"></label>
+      <label><span>Кружки, секции, музыка, спорт</span>
+        <input type="number" inputmode="numeric" min="0" step="500" id="kruzhki" placeholder="₽ в месяц"></label>
+      <label><span>Питание в школе</span>
+        <input type="number" inputmode="numeric" min="0" step="500" id="pitanie" placeholder="₽ в месяц"></label>
+      <label><span>Дорога: такси, транспорт, бензин на развозы</span>
+        <input type="number" inputmode="numeric" min="0" step="500" id="doroga" placeholder="₽ в месяц"></label>
+      <label><span>Лагеря и занятия на каникулах</span>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="lager" placeholder="₽ за год"></label>
+      <div class="hint">Считаем учебный год как 10 месяцев, с сентября по июнь.</div>
+    </form>
+
+    <div class="result" id="calcResult" hidden>
+      <div class="row"><span>В месяц в среднем</span><b id="outMonth">0 ₽</b></div>
+      <div class="row"><span>За учебный год</span><b id="outYear">0 ₽</b></div>
+      <div class="diff">
+        <div class="word" id="outWord">Разница с полным днём в Ель School</div>
+        <div class="val" id="outDiff">0 ₽</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Что входит в эту разницу</h2>
+    <div class="grid">
+      <article>
+        <h3>Уроки сделаны до дома</h3>
+        <p>Часы самоподготовки стоят в расписании: домашнее задание ребёнок делает
+          в школе с учителем. Вечер перестаёт быть вторым учебным днём.</p>
+      </article>
+      <article>
+        <h3>Кружки в том же здании</h3>
+        <p>18 направлений на территории. Не нужно везти ребёнка через город
+          и ждать его в машине два раза в неделю.</p>
+      </article>
+      <article>
+        <h3>Взрослый, который отвечает за адаптацию</h3>
+        <p>Тьютор ведёт класс весь год и держит связь с родителями, не дожидаясь
+          собрания. Это не продлёнка и не няня - это часть учебного дня.</p>
+      </article>
+    </div>
+    <p class="compare-note">Полный день в Ель School стоит 56 000 ₽ в месяц без школьного
+      транспорта и 62 000-66 000 ₽ с ним. При поступлении есть разовый вступительный взнос.
+      Скидки действуют, в том числе за второго ребёнка и по рекомендации.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Честно про сам расчёт</h2>
+    <p>Этот калькулятор не доказывает, что частная школа дешевле. Чаще всего она дороже -
+      и это нормально. Он нужен для другого: увидеть, что часть суммы вы уже платите,
+      и понять, какова настоящая разница, а не та, что кажется при взгляде на прайс.</p>
+    <p>Иногда разница оказывается меньше стоимости одних только репетиторов. Иногда -
+      наоборот, и тогда честнее это признать сразу, а не на третьей встрече.</p>
+  </div>
+</section>
+
+<section class="block" id="zapis">
+  <div class="wrap">
+    <div class="form-wrap">
+      <h2>Посчитаем вашу ситуацию вместе</h2>
+      <p>На экскурсии соберём полную сумму под вашу семью: с транспортом по вашему району,
+        питанием и теми занятиями, которые ребёнку действительно нужны. Заодно посмотрите
+        школу - это 40 минут.</p>
+      <form id="leadForm" novalidate>
+        <input type="text" name="name" autocomplete="name" aria-label="Имя" placeholder="Как вас зовут" required>
+        <input type="tel" name="phone" autocomplete="tel" aria-label="Телефон" placeholder="+7 900 000-00-00" required>
+        <button class="btn" type="submit">Записаться</button>
+      </form>
+      <div class="form-note" id="leadNote" aria-live="polite">Перезвоним в рабочее время и договоримся о визите.</div>
+      <div class="consent">Отправляя форму, вы соглашаетесь на обработку своих контактных данных,
+        чтобы мы могли перезвонить и назначить встречу.</div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div>ЕЛЬ SCHOOL · частная школа 1-11 класс · гослицензия и аккредитация</div>
+    <div>Новосибирск, Ползунова 7 · <a href="tel:+73833887402" style="color:inherit">388-74-02</a></div>
+    <div>© Ель School, 2026</div>
+  </div>
+</footer>
+
+<script src="../assets/landing.js"></script>
+<script src="../assets/calc.js"></script>
+</body>
+</html>

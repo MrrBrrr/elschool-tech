@@ -17,6 +17,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://elschool.tech/og-cover.jpg">
 <link rel="canonical" href="https://elschool.tech/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <!-- Yandex.Metrika -->
@@ -122,6 +123,8 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
   .content .cta:hover{background:var(--accent);color:#fff}
 
   /* hero-слайд: крупная типографика */
+  .hero-t .hero-title{margin:0;font-weight:inherit;font-size:inherit;line-height:inherit}
+  .hero-t .thin,.hero-t .fat{display:block}
   .hero-t .thin{font-size:clamp(20px,2.6vw,36px);font-weight:200;letter-spacing:.36em;text-transform:uppercase}
   .hero-t .fat{font-size:clamp(52px,8vw,112px);font-weight:800;line-height:1;text-transform:uppercase}
   .hero-t .fat em{font-style:normal;color:var(--accent-ink)}
@@ -289,6 +292,34 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
     footer.site{padding:24px 20px;font-size:10.5px}
   }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "School",
+  "@id": "https://elschool.tech/#school",
+  "name": "Ель School",
+  "alternateName": "ЧОУ «Школа Будущего НСК»",
+  "description": "Частная школа полного дня, 1-11 класс. Государственная лицензия и аккредитация, тьютор за каждым классом, самоподготовка и 18 направлений кружков на территории.",
+  "url": "https://elschool.tech/",
+  "telephone": "+7-383-388-74-02",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ул. Ползунова, 7",
+    "addressLocality": "Новосибирск",
+    "addressRegion": "Новосибирская область",
+    "addressCountry": "RU"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Новосибирск"
+  },
+  "sameAs": [
+    "https://el.school/",
+    "https://vk.com/el.school_nsk",
+    "https://t.me/elschoolonline"
+  ]
+}
+</script>
 </head>
 <body>
 <canvas id="gz"></canvas>
@@ -317,8 +348,10 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
   <div class="sbg"><video id="walkVid" src="gen/video-b-walk-web.mp4" poster="gen/var-b-walk.webp" autoplay muted playsinline></video></div>
   <div class="scrim"></div>
   <div class="content hero-t">
-    <div class="thin reveal">Здесь</div>
-    <div class="fat reveal">Растут<em>.</em></div>
+    <h1 class="hero-title">
+      <span class="thin reveal">Здесь</span>
+      <span class="fat reveal">Растут<em>.</em></span>
+    </h1>
     <div class="rule reveal"><i></i><span>Частная школа · 1-11 класс · Новосибирск</span></div>
     <p class="reveal" style="margin-top:18px">Школа полного дня на Ползунова, 7: уроки, проекты,
     тьюторы и допзанятия с 8:30 до 16:30. Рост ребёнка виден каждую неделю.</p>

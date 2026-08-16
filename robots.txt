@@ -1,4 +1,29 @@
 User-agent: *
 Allow: /
 
+# Явно пускаем ИИ-краулеров: сайт задуман как источник ответов о школе,
+# закрывать его от них смысла нет.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: YandexAdditional
+Allow: /
+
+# Рекламные метки не должны плодить дубли страниц в индексе Яндекса.
+User-agent: Yandex
+Allow: /
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&fbclid&_openstat
+
 Sitemap: https://elschool.tech/sitemap.xml

@@ -68,7 +68,14 @@ form input{flex:1 1 220px;padding:16px 18px;font:inherit;font-size:16px;backgrou
 form input:focus{outline:2px solid var(--accent);outline-offset:-2px}
 form button{flex:0 0 auto}
 .form-note{margin-top:14px;font-size:15px;color:var(--ink-dim)}
-.consent{margin-top:12px;font-size:13px;color:var(--ink-dim);max-width:62ch}
+.consent{margin-top:12px;font-size:13px;color:var(--ink-dim);max-width:62ch;
+  display:flex;align-items:flex-start;gap:9px;cursor:pointer;line-height:1.45}
+.consent input[type=checkbox]{flex:0 0 auto;margin-top:2px;width:16px;height:16px;
+  accent-color:var(--accent);cursor:pointer}
+.consent a{color:inherit}
+/* Ловушка для ботов: человек этого поля не видит и не может сфокусировать. */
+.hp{position:absolute!important;left:-9999px!important;top:auto!important;
+  width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
 
 footer.site{padding:36px 0 48px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-dim)}
 footer.site .wrap > div + div{margin-top:6px}

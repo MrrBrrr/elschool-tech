@@ -190,11 +190,13 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
       <form id="leadForm" novalidate>
         <input type="text" name="name" autocomplete="name" aria-label="Имя" placeholder="Как вас зовут" required>
         <input type="tel" name="phone" autocomplete="tel" aria-label="Телефон" placeholder="+7 900 000-00-00" required>
+        <input type="text" name="company" id="leadCompany" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn" type="submit">Записаться</button>
       </form>
       <div class="form-note" id="leadNote" aria-live="polite">Перезвоним в рабочее время и договоримся о визите.</div>
-      <div class="consent">Отправляя форму, вы соглашаетесь на обработку своих контактных данных,
-        чтобы мы могли перезвонить и назначить встречу.</div>
+      <label class="consent"><input type="checkbox" id="leadConsent" name="consent">
+        <span>Даю согласие на обработку персональных данных, чтобы школа могла перезвонить
+        и назначить встречу. <a href="/politika-personalnyh-dannyh/">Политика обработки</a>.</span></label>
     </div>
   </div>
 </section>

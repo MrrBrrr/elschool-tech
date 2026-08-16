@@ -6,12 +6,21 @@
   document.documentElement.classList.replace('no-js', 'js');
 
   var LANDING = document.body.getAttribute('data-landing') || location.pathname;
+  var FORM_NAME = 'elschool-tech/' + LANDING;
   var COUNTER = 80492089;
   var GOAL = 'elschool_tech_form_submit';
+
+  /* ===== приёмник заявки =====
+     ЕДИНСТВЕННАЯ точка, где задан адрес получателя. Переезд на форму amoCRM
+     меняется здесь и больше нигде: остальной код работает с полями name/phone/source. */
   var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfmT63R-NLNBKdAzcj40ow7isV72Pcbb5f5rFr9dwrTy4YIGA/formResponse';
   var FIELD_NAME = 'entry.1100695434';
   var FIELD_PHONE = 'entry.419055877';
   var FIELD_SOURCE = 'entry.1850239562';
+
+  /* Форма открыта в этот момент. Человеку нужно время на заполнение, боту - нет. */
+  var OPENED_AT = Date.now();
+  var MIN_FILL_MS = 2500;
 
   /* ===== атрибуция: первый и последний входящий канал ===== */
   var ATTRIBUTION_KEY = 'elschoolTechAttributionV1';
@@ -41,7 +50,7 @@
      «источник», поэтому видно, откуда пришёл человек, без правки самой формы. */
   function sourceLine() {
     var l = attribution.last || {};
-    var parts = [LANDING];
+    var parts = [FORM_NAME];
     if (l.utm_source)   parts.push('src=' + l.utm_source);
     if (l.utm_medium)   parts.push('med=' + l.utm_medium);
     if (l.utm_campaign) parts.push('camp=' + l.utm_campaign);
@@ -59,10 +68,28 @@
     e.preventDefault();
     var btn = leadForm.querySelector('button');
     var note = document.getElementById('leadNote');
+    var honey = document.getElementById('leadCompany');
+    var consent = document.getElementById('leadConsent');
     var nameVal = leadForm.name.value.trim();
     var digits = leadForm.phone.value.replace(/\D/g, '');
     var phoneOk = (digits.length === 11 && (digits[0] === '7' || digits[0] === '8'))
                || (digits.length === 10 && digits[0] === '9');
+
+    /* Бот заполняет все поля подряд и отправляет мгновенно. Человек - нет.
+       Ответ ему показываем обычный: пусть считает, что заявка ушла. */
+    if ((honey && honey.value) || (Date.now() - OPENED_AT) < MIN_FILL_MS) {
+      btn.disabled = true;
+      btn.textContent = 'Заявка отправлена';
+      note.textContent = 'Спасибо! Перезвоним в рабочее время.';
+      return;
+    }
+
+    /* Согласие обязательно: без него сбор телефона незаконен (152-ФЗ). */
+    if (consent && !consent.checked) {
+      note.textContent = 'Отметьте согласие на обработку данных - без него мы не вправе вам перезвонить.';
+      consent.focus();
+      return;
+    }
 
     if (nameVal.length < 2) {
       note.textContent = 'Подскажите имя - как к вам обращаться?';

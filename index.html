@@ -190,6 +190,13 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
   .form button{padding:15px 32px;background:var(--ink);color:var(--bg);border:none;cursor:pointer;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
   .form button:hover{background:var(--accent);color:#fff}
   .form-note{margin-top:12px;font-size:11px;color:rgba(22,24,26,.6)}
+  .consent{margin-top:10px;font-size:11px;color:rgba(22,24,26,.6);max-width:52ch;
+    display:flex;align-items:flex-start;gap:8px;cursor:pointer;line-height:1.5}
+  .consent input[type=checkbox]{flex:0 0 auto;margin-top:1px;width:15px;height:15px;cursor:pointer}
+  .consent a{color:inherit}
+  /* Ловушка для ботов: человек этого поля не видит и не может сфокусировать. */
+  .hp{position:absolute!important;left:-9999px!important;top:auto!important;
+    width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
 
   footer.site{
     padding:34px 48px;border-top:1px solid var(--line);
@@ -321,7 +328,7 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
 }
 </script>
 </head>
-<body>
+<body data-landing="glavnaya">
 <canvas id="gz"></canvas>
 <div id="mgz" hidden>
   <div class="mg-scan"></div>
@@ -512,9 +519,13 @@ ym(80492089,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
     <form class="form reveal" id="leadForm">
       <input type="text" name="name" autocomplete="name" aria-label="Имя" placeholder="Имя" required>
       <input type="tel" name="phone" autocomplete="tel" aria-label="Телефон" placeholder="+7 900 000-00-00" required>
+      <input type="text" name="company" id="leadCompany" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit">Записаться</button>
     </form>
     <div class="form-note reveal" id="leadNote" aria-live="polite">Оставьте телефон - перезвоним в рабочее время и договоримся о визите.</div>
+    <label class="consent reveal"><input type="checkbox" id="leadConsent" name="consent">
+      <span>Даю согласие на обработку персональных данных, чтобы школа могла перезвонить
+      и назначить встречу. <a href="/politika-personalnyh-dannyh/">Политика обработки</a>.</span></label>
   </div>
   <div class="plate">кадр 10 · первый шаг</div>
 </section>
@@ -549,70 +560,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 });
 
-/* ===== атрибуция: первый и последний входящий канал ===== */
-const ATTRIBUTION_KEY = "elschoolTechAttributionV1";
-const ATTRIBUTION_KEYS = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","yclid","gclid","fbclid"];
-function attributionSnapshot(){
-  const query = new URLSearchParams(location.search);
-  const touch = {landing_path: location.pathname, referrer: document.referrer || "(direct)", captured_at: new Date().toISOString()};
-  ATTRIBUTION_KEYS.forEach(key => { if(query.get(key)) touch[key] = query.get(key); });
-  let saved = {};
-  try { saved = JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "{}"); } catch (_) {}
-  const next = {first: saved.first || touch, last: touch};
-  try { localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(next)); } catch (_) {}
-  return next;
-}
-const attribution = attributionSnapshot();
-
-/* ===== форма: заявка в защищённое хранилище ===== */
-const leadForm = document.getElementById('leadForm');
-if(leadForm){
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfmT63R-NLNBKdAzcj40ow7isV72Pcbb5f5rFr9dwrTy4YIGA/formResponse';
-  leadForm.addEventListener('submit', e=>{
-    e.preventDefault();
-    const btn = leadForm.querySelector('button');
-    const note = document.getElementById('leadNote');
-    /* защита от мусора: имя от 2 букв, телефон - реальный российский номер */
-    const nameVal = leadForm.name.value.trim();
-    const digits = leadForm.phone.value.replace(/\D/g, '');
-    const phoneOk = (digits.length === 11 && (digits[0] === '7' || digits[0] === '8'))
-                 || (digits.length === 10 && digits[0] === '9');
-    if(nameVal.length < 2){
-      note.textContent = 'Подскажите имя - как к вам обращаться?';
-      leadForm.name.focus();
-      return;
-    }
-    if(!phoneOk){
-      note.textContent = 'Проверьте телефон: нужен номер вида +7 900 000-00-00 - иначе не сможем перезвонить.';
-      leadForm.phone.focus();
-      return;
-    }
-    const phoneNorm = '+7' + (digits.length === 11 ? digits.slice(1) : digits);
-    const fd = new FormData();
-    fd.append('entry.1100695434', nameVal);
-    fd.append('entry.419055877', phoneNorm);
-    fd.append('entry.1850239562', 'elschool.tech');
-    btn.disabled = true; btn.textContent = 'Отправляем…';
-    fetch(FORM_URL, {method:'POST', mode:'no-cors', body:fd}).then(()=>{
-      if(typeof ym === "function"){
-        const last = attribution.last || {};
-        ym(80492089, "reachGoal", "elschool_tech_form_submit", {
-          utm_source: last.utm_source || "(none)",
-          utm_medium: last.utm_medium || "(none)",
-          utm_campaign: last.utm_campaign || "(none)",
-          landing_path: last.landing_path || location.pathname,
-          referrer: last.referrer || "(direct)"
-        });
-      }
-      btn.textContent = "Заявка отправлена ✓";
-      note.textContent = 'Спасибо! Перезвоним в рабочее время. Если срочно - 388-74-02.';
-      leadForm.reset();
-    }).catch(()=>{
-      btn.disabled = false; btn.textContent = 'Записаться';
-      note.textContent = 'Не получилось отправить - позвоните нам: 388-74-02.';
-    });
-  });
-}
+/* Атрибуция и отправка заявки живут в общем assets/landing.js - он подключён
+   в конце страницы. Своей копии здесь больше нет: расходились правила валидации
+   и адрес приёмника. */
 
 /* ===== hero-видео: доигрывает до конца и замирает на финальной позе
    (мальчик развернулся к зрителю, шлейф осел). Клик по слайду - повтор ===== */
@@ -964,5 +914,6 @@ document.addEventListener('visibilitychange', ()=>{
 });
 requestAnimationFrame(draw);
 </script>
+<script src="assets/landing.js"></script>
 </body>
 </html>

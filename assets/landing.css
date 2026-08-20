@@ -1,7 +1,8 @@
 /* Общий стиль посадочных elschool.tech. Палитра и типографика - из главной. */
 :root{
-  --bg:#f2f2ef; --ink:#16181a; --ink-dim:rgba(22,24,26,.68);
-  --accent:#5f9e1f; --accent-ink:#47761c; --line:rgba(22,24,26,.16);
+  --bg:#f2f2ef; --surface:#fff; --ink:#16181a; --ink-dim:rgba(22,24,26,.68);
+  --accent:#5f9e1f; --accent-ink:#47761c; --forest:#1f4e32; --line:rgba(22,24,26,.16);
+  --shadow:0 18px 48px rgba(24,42,29,.09);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -12,26 +13,58 @@ img{max-width:100%;display:block}
 .wrap{width:min(1080px,100% - 40px);margin-inline:auto}
 
 header{position:sticky;top:0;z-index:50;padding:16px 0;
-  background:rgba(242,242,239,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  background:rgba(242,242,239,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 header .row{display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:12px;letter-spacing:.4em;font-weight:700;text-transform:uppercase;text-decoration:none;color:inherit}
 .logo b{color:var(--accent)}
 header a.tel{font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
 
-.btn{display:inline-block;padding:16px 30px;background:var(--ink);color:var(--bg);border:0;cursor:pointer;
-  font:inherit;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;transition:background .2s}
-.btn:hover{background:var(--accent);color:#fff}
+.btn{display:inline-block;padding:16px 30px;background:var(--forest);color:#fff;border:0;cursor:pointer;
+  font:inherit;font-size:13px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;transition:transform .2s,background .2s,box-shadow .2s}
+.btn:hover{background:var(--accent-ink);color:#fff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(31,78,50,.22)}
 
-.hero{position:relative;padding:64px 0 72px;overflow:hidden}
-.hero .bg{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:.22}
-.hero .inner{position:relative}
+.hero{position:relative;padding:72px 0 68px;overflow:hidden;background:linear-gradient(122deg,#e5ede0 0%,#f7f7f3 62%,#dbe8d5 100%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(242,242,239,.94) 0%,rgba(242,242,239,.8) 47%,rgba(242,242,239,.22) 100%);pointer-events:none}
+.hero .bg{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:.38;filter:saturate(.88) contrast(1.03)}
+.hero .inner{position:relative;z-index:1}
 h1{font-size:clamp(30px,5.4vw,58px);line-height:1.08;font-weight:700;letter-spacing:-.02em;max-width:18ch}
 h1 em{font-style:normal;color:var(--accent-ink)}
 .lead{margin-top:22px;font-size:clamp(16px,2.1vw,20px);color:var(--ink-dim);max-width:56ch}
 .hero .btn{margin-top:32px}
 .hero .note{margin-top:14px;font-size:14px;color:var(--ink-dim);max-width:56ch}
+.hero-proof{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;padding:0;list-style:none;max-width:58ch}
+.hero-proof li{padding:7px 11px;border:1px solid rgba(31,78,50,.22);border-radius:999px;background:rgba(255,255,255,.6);font-size:12px;font-weight:650;color:var(--forest)}
 
-section.block{padding:56px 0;border-top:1px solid var(--line)}
+/* Реальные сцены школы: текст и действие живут рядом, а не прячутся под фильтром. */
+.hero--documentary{padding:0;background:var(--surface)}
+.hero--documentary::after{display:none}
+.hero--documentary .inner{width:min(1240px,100% - 40px);display:grid;grid-template-columns:minmax(0,.94fr) minmax(360px,1.06fr);align-items:stretch}
+.hero--documentary .hero-copy{padding:clamp(42px,6vw,88px) clamp(24px,5vw,72px);display:flex;flex-direction:column;justify-content:center;background:linear-gradient(140deg,#f6f7f1 0%,#e6efdf 100%)}
+.hero--documentary .hero-media{position:relative;min-height:560px;margin:0;background:#dce4d9;overflow:hidden}
+.hero--documentary .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center}
+.hero--documentary .hero-media figcaption{position:absolute;right:18px;bottom:18px;max-width:230px;padding:11px 13px;background:rgba(255,255,255,.94);font-size:13px;color:var(--ink)}
+.hero--documentary .hero-media figcaption strong{display:block;margin-bottom:3px;color:var(--accent-ink)}
+.hero--documentary h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,4.7vw,68px);line-height:.98;letter-spacing:-.055em;max-width:11ch}
+.hero--documentary .lead{font-size:18px;max-width:44ch}
+.hero--documentary .btn{align-self:flex-start}
+.photo-story{padding:24px 0;background:#fff;border-top:1px solid var(--line)}
+.photo-story .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(240px,.95fr);gap:18px;align-items:center}
+.photo-story figure{margin:0;min-height:260px;overflow:hidden;border-radius:14px;background:#e5ebe0}
+.photo-story img{width:100%;height:100%;min-height:260px;object-fit:cover}
+.photo-story .story-copy{padding:18px 0}
+.photo-story .story-copy p{margin-top:12px}
+.photo-gallery{padding:72px 0;background:#f6f7f1;border-top:1px solid var(--line)}
+.photo-gallery .gallery-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:24px}
+.photo-gallery .gallery-head h2{max-width:17ch}
+.photo-gallery .gallery-head p{max-width:42ch;margin:0}
+.photo-gallery-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px}
+.photo-gallery figure{position:relative;min-height:270px;margin:0;overflow:hidden;border-radius:14px;background:#dce4d9}
+.photo-gallery figure:first-child{grid-row:span 2;min-height:554px}
+.photo-gallery img{display:block;width:100%;height:100%;object-fit:cover}
+.photo-gallery figcaption{position:absolute;left:12px;bottom:12px;max-width:calc(100% - 24px);padding:8px 10px;background:rgba(255,255,255,.92);font-size:12px;color:var(--ink)}
+
+section.block{padding:64px 0;border-top:1px solid var(--line)}
+section.block:nth-of-type(odd){background:rgba(255,255,255,.32)}
 h2{font-size:clamp(22px,3.2vw,34px);line-height:1.15;font-weight:700;letter-spacing:-.01em}
 h2 + p, h2 + .grid, h2 + .day, h2 + .tablewrap, h2 + .price{margin-top:24px}
 p{font-size:17px;color:var(--ink-dim);max-width:62ch}
@@ -39,18 +72,19 @@ p + p{margin-top:14px}
 p strong{color:var(--ink)}
 
 .price{display:flex;flex-wrap:wrap;gap:14px}
-.price .card{flex:1 1 210px;padding:22px;background:#fff;border:1px solid var(--line)}
+.price .card{flex:1 1 210px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 22px rgba(24,42,29,.05)}
 .price .card .sum{font-size:30px;font-weight:700;letter-spacing:-.02em}
 .price .card .cap{margin-top:6px;font-size:14px;color:var(--ink-dim)}
 .price-note{margin-top:20px}
 
-.day{border-left:2px solid var(--accent);padding-left:22px;display:grid;gap:12px;max-width:62ch}
+.day{border-left:2px solid var(--accent);padding:8px 0 8px 22px;display:grid;gap:14px;max-width:62ch}
 .day div{display:flex;gap:16px;font-size:17px}
 .day time{flex:0 0 96px;font-weight:700;font-variant-numeric:tabular-nums}
 .day span{color:var(--ink-dim)}
 
 .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.grid article{padding:24px;background:#fff;border:1px solid var(--line)}
+.grid article{padding:26px 24px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 22px rgba(24,42,29,.05);transition:transform .2s,box-shadow .2s}
+.grid article:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
 .grid h3{font-size:19px;margin-bottom:10px}
 .grid p{font-size:16px}
 
@@ -61,7 +95,7 @@ thead th{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(-
 td:first-child{color:var(--ink-dim)}
 .compare-note{margin-top:18px}
 
-.form-wrap{background:#fff;border:1px solid var(--line);padding:clamp(24px,4vw,40px)}
+.form-wrap{background:linear-gradient(135deg,#fff 0%,#f5f8f1 100%);border:1px solid rgba(31,78,50,.22);border-radius:18px;padding:clamp(24px,4vw,40px);box-shadow:var(--shadow)}
 form{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 form input{flex:1 1 220px;padding:16px 18px;font:inherit;font-size:16px;background:var(--bg);
   border:1px solid var(--line);color:var(--ink)}
@@ -79,8 +113,46 @@ form button{flex:0 0 auto}
 
 footer.site{padding:36px 0 48px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-dim)}
 footer.site .wrap > div + div{margin-top:6px}
+.mobile-book{display:none}
 
 @media(max-width:640px){
+  .wrap{width:min(1080px,100% - 32px)}
+  header{padding:13px 0}
+  header a.tel{font-size:14px}
+  .hero{padding:46px 0 38px}
+  .hero::after{background:linear-gradient(180deg,rgba(242,242,239,.91) 0%,rgba(242,242,239,.84) 62%,rgba(242,242,239,.7) 100%)}
+  .hero .bg{opacity:.28;background-position:65% center}
+  h1{font-size:clamp(31px,10vw,42px)}
+  .lead{margin-top:18px;font-size:17px}
+  .hero .btn{margin-top:24px;width:100%;text-align:center}
+  .hero-proof{margin-top:18px;gap:6px}
+  .hero-proof li{font-size:11px;padding:6px 9px}
+  .hero--documentary .inner{width:100%;grid-template-columns:1fr}
+  .hero--documentary .hero-copy{padding:42px 24px 30px}
+  .hero--documentary h1{font-size:clamp(38px,11vw,52px)}
+  .hero--documentary .hero-media{min-height:350px}
+  .hero--documentary .hero-media img{object-position:center}
+  .hero--documentary .hero-media figcaption{right:12px;bottom:12px;max-width:208px;font-size:12px}
+  .photo-story{padding:0}
+  .photo-story .wrap{width:100%;grid-template-columns:1fr;gap:0}
+  .photo-story figure{min-height:270px;border-radius:0}
+  .photo-story img{min-height:270px}
+  .photo-story .story-copy{padding:28px 24px 32px}
+  .photo-gallery{padding:46px 0}
+  .photo-gallery .gallery-head{display:block;margin-bottom:18px}
+  .photo-gallery .gallery-head p{margin-top:12px}
+  .photo-gallery-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .photo-gallery figure,.photo-gallery figure:first-child{min-height:190px;grid-row:auto;border-radius:8px}
+  .photo-gallery figure:first-child{grid-column:span 2;min-height:310px}
+  .photo-gallery figcaption{left:8px;bottom:8px;padding:6px 8px;font-size:11px}
+  section.block{padding:46px 0}
+  .grid{gap:12px}
+  .grid article{padding:20px;border-radius:12px}
+  .price{gap:10px}
+  .price .card{padding:18px;border-radius:12px}
+  .form-wrap{border-radius:14px}
+  .mobile-book{display:block;position:fixed;z-index:49;right:16px;bottom:16px;padding:13px 16px;background:var(--forest);color:#fff;border-radius:999px;box-shadow:0 12px 28px rgba(31,78,50,.28);font-size:11px;font-weight:700;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+  footer.site{padding-bottom:86px}
   .day div{flex-direction:column;gap:2px}
   .day time{flex:none}
 }

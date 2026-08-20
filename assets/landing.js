@@ -7,8 +7,9 @@
 
   var LANDING = document.body.getAttribute('data-landing') || location.pathname;
   var FORM_NAME = 'elschool-tech/' + LANDING;
-  var COUNTER = 80492089;
-  var GOAL = 'elschool_tech_form_submit';
+  var COUNTER = 111777976;
+  var FORM_GOAL = 'elschool_tech_form_submit';
+  var PHONE_GOAL = 'elschool_tech_phone_click';
 
   /* ===== приёмник заявки =====
      ЕДИНСТВЕННАЯ точка, где задан адрес получателя. Переезд на форму amoCRM
@@ -45,6 +46,19 @@
   }
 
   var attribution = attributionSnapshot();
+
+  function reachGoal(goal, params) {
+    if (typeof ym === 'function') ym(COUNTER, 'reachGoal', goal, params);
+  }
+
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    var phoneLink = target && target.closest
+      ? target.closest('a[href^="tel:"]')
+      : null;
+
+    if (phoneLink) reachGoal(PHONE_GOAL, { landing: LANDING });
+  });
 
   /* Источник строкой: посадочная плюс метки. Уезжает вместе с заявкой в поле
      «источник», поэтому видно, откуда пришёл человек, без правки самой формы. */
@@ -112,18 +126,16 @@
     btn.textContent = 'Отправляем…';
 
     fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: fd }).then(function () {
-      if (typeof ym === 'function') {
-        var last = attribution.last || {};
-        ym(COUNTER, 'reachGoal', GOAL, {
-          landing: LANDING,
-          utm_source: last.utm_source || '(none)',
-          utm_medium: last.utm_medium || '(none)',
-          utm_campaign: last.utm_campaign || '(none)',
-          utm_content: last.utm_content || '(none)',
-          utm_term: last.utm_term || '(none)',
-          referrer: last.referrer || '(direct)'
-        });
-      }
+      var last = attribution.last || {};
+      reachGoal(FORM_GOAL, {
+        landing: LANDING,
+        utm_source: last.utm_source || '(none)',
+        utm_medium: last.utm_medium || '(none)',
+        utm_campaign: last.utm_campaign || '(none)',
+        utm_content: last.utm_content || '(none)',
+        utm_term: last.utm_term || '(none)',
+        referrer: last.referrer || '(direct)'
+      });
       btn.textContent = 'Заявка отправлена';
       note.textContent = 'Спасибо! Перезвоним в рабочее время. Если срочно - 388-74-02.';
       leadForm.reset();

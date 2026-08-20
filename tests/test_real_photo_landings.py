@@ -33,10 +33,12 @@ class RealPhotoLandingTests(unittest.TestCase):
         self.assertTrue(photos.is_dir(), "assets/photos must exist")
         self.assertGreaterEqual(len(list(photos.glob("*.jpg"))), 6)
 
-    def test_homepage_uses_documentary_images_instead_of_generated_backgrounds(self) -> None:
+    def test_homepage_keeps_the_approved_animated_story(self) -> None:
         source = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("assets/photos/", source)
-        self.assertNotIn("gen/var-", source)
+        self.assertIn('id="walkVid"', source)
+        self.assertIn('id="duoVid"', source)
+        self.assertIn('id="leadConsent"', source)
+        self.assertIn('/politika-personalnyh-dannyh/', source)
 
 
 if __name__ == "__main__":

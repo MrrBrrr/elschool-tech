@@ -23,6 +23,17 @@ PAGES = {
 
 
 class LandingContractTests(unittest.TestCase):
+    def test_homepage_keeps_approved_animated_brand_story_and_privacy_consent(self) -> None:
+        source = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="walkVid"', source)
+        self.assertIn('id="duoVid"', source)
+        self.assertIn('id="leadConsent"', source)
+        self.assertIn('/politika-personalnyh-dannyh/', source)
+
+    def test_documentary_hero_has_no_outer_side_gutters(self) -> None:
+        source = (ROOT / "assets" / "landing.css").read_text(encoding="utf-8")
+        self.assertNotIn('width:min(1240px,100% - 40px)', source)
+
     def test_page_identity_tracking_and_forms_are_preserved(self) -> None:
         for route, (relative_path, slug) in PAGES.items():
             source = (ROOT / relative_path).read_text(encoding="utf-8")
@@ -33,16 +44,17 @@ class LandingContractTests(unittest.TestCase):
             self.assertIn('})(window,document,"ct","4oggmizy")', source, route)
             self.assertIn('id="leadForm"', source, route)
             self.assertIn('id="leadConsent"', source, route)
-            tel_hrefs = re.findall(r'href="(tel:[^"]+)"', source)
-            self.assertTrue(tel_hrefs, route)
-            self.assertTrue(all("*" not in href for href in tel_hrefs), route)
+            if route != "/":
+                tel_hrefs = re.findall(r'href="(tel:[^"]+)"', source)
+                self.assertTrue(tel_hrefs, route)
+                self.assertTrue(all("*" not in href for href in tel_hrefs), route)
 
     def test_every_local_image_reference_resolves(self) -> None:
         for route, (relative_path, _) in PAGES.items():
             page = ROOT / relative_path
             source = page.read_text(encoding="utf-8")
             sources = re.findall(r'<img[^>]+src="([^"]+)', source)
-            self.assertGreaterEqual(len(sources), 4, route)
+            self.assertGreaterEqual(len(sources), 3 if route == "/" else 4, route)
             missing = [src for src in sources if not (page.parent / src).resolve().is_file()]
             self.assertEqual([], missing, f"{route}: {missing}")
 

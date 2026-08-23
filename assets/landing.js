@@ -10,6 +10,8 @@
   var COUNTER = 111777976;
   var FORM_GOAL = 'elschool_tech_form_submit';
   var PHONE_GOAL = 'elschool_tech_phone_click';
+  var CALLTOUCH_WIDGET_GOAL = 'widget-calltouch';
+  var CALLTOUCH_ROUTE_KEY = 'el.school';
 
   /* ===== приёмник заявки =====
      ЕДИНСТВЕННАЯ точка, где задан адрес получателя. Переезд на форму amoCRM
@@ -49,6 +51,31 @@
 
   function reachGoal(goal, params) {
     if (typeof ym === 'function') ym(COUNTER, 'reachGoal', goal, params);
+  }
+
+  function registerCalltouchRequest(phone, attemptsRemaining) {
+    var bridge = window.ElSchoolCalltouchBridge;
+
+    if (!bridge || typeof bridge.createCallbackRequest !== 'function') return;
+
+    if (!window.ctw || typeof window.ctw.createRequest !== 'function') {
+      if (attemptsRemaining > 0) {
+        setTimeout(function () {
+          registerCalltouchRequest(phone, attemptsRemaining - 1);
+        }, 250);
+      }
+      return;
+    }
+
+    bridge.createCallbackRequest({
+      ctw: window.ctw,
+      routeKey: CALLTOUCH_ROUTE_KEY,
+      phone: phone
+    }).then(function (outcome) {
+      if (outcome.status === 'created') {
+        reachGoal(CALLTOUCH_WIDGET_GOAL, { landing: LANDING });
+      }
+    });
   }
 
   document.addEventListener('click', function (event) {
@@ -136,6 +163,7 @@
         utm_term: last.utm_term || '(none)',
         referrer: last.referrer || '(direct)'
       });
+      registerCalltouchRequest(phoneNorm, 8);
       btn.textContent = 'Заявка отправлена';
       note.textContent = 'Спасибо! Перезвоним в рабочее время. Если срочно - 388-74-02.';
       leadForm.reset();
